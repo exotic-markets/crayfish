@@ -1,29 +1,53 @@
-use crayfish_account_macro::account;
-use crayfish_accounts::{Program, System};
-use crayfish_context_macro::context;
-use crayfish_handler_macro::handlers;
-use crayfish_program_id_macro::program_id;
-use crayfish_space::Space;
-use pinocchio::{entrypoint, msg, program_error::ProgramError};
+use {
+    crayfish_account_macro::account,
+    crayfish_accounts::{Account, Mut, Program, ReadableAccount, Signer, System, WritableAccount},
+    crayfish_context_macro::context,
+    crayfish_handler_macro::handlers,
+    crayfish_program_id_macro::program_id,
+    crayfish_space::Space,
+    pinocchio::{entrypoint, msg, program_error::ProgramError},
+};
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
-
-#[context]
-pub struct InitContext<'a> {
-    // #[account(init)]
-    pub system: Program<'a, System>,
-}
 
 handlers! {
     initialize,
     increment
 }
 
-pub fn increment(InitContext { system }: InitContext) -> Result<(), ProgramError> {
+#[context]
+pub struct InitContext<'a> {
+    pub counter: Mut<Account<'a, Counter>>,
+    pub payer: Signer<'a>,
+    pub system: Program<'a, System>,
+}
+
+pub fn initialize(ctx: InitContext) -> Result<(), ProgramError> {
+    let InitContext {
+        counter,
+        payer,
+        system,
+    } = ctx;
+
+    // TODO: Actual account creation
+    msg!("{:?}", counter.key());
+    msg!("{:?}", payer.key());
+    msg!("{:?}", system.key());
+
     Ok(())
 }
 
-pub fn initialize() -> Result<(), ProgramError> {
+#[context]
+pub struct IncrementContext<'a> {
+    pub counter: Mut<Account<'a, Counter>>,
+}
+
+pub fn increment(ctx: IncrementContext) -> Result<(), ProgramError> {
+    let IncrementContext { counter } = ctx;
+
+    let mut counter_data = counter.mut_data()?;
+    counter_data.count += 1;
+
     Ok(())
 }
 

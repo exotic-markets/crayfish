@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use crayfish_errors::Error;
 use crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref};
 
-use crate::{FromAccountInfo, ProgramId, ReadableAccount};
+use crate::{BpfLoaderUpgradeable, FromAccountInfo, ProgramId, ReadableAccount};
 
 ///
 /// Checks:
@@ -22,12 +22,12 @@ where
     T: ProgramId,
 {
     fn try_from_info(info: &'a RawAccountInfo) -> Result<Self, ProgramError> {
-        if info.owner() != &T::ID {
+        if info.owner() != &BpfLoaderUpgradeable::ID {
             return Err(Error::AccountOwnedByWrongProgram.into());
         }
 
         if !info.executable() {
-            return Err(Error::AccountOwnedByWrongProgram.into());
+            return Err(Error::InvalidProgramExecutable.into());
         }
 
         Ok(Program {

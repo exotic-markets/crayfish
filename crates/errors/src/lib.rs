@@ -1,38 +1,50 @@
-use crayfish_program::{msg, program_error::ProgramError, pubkey::Pubkey};
+use crayfish_program::{
+    msg,
+    program_error::ProgramError,
+    pubkey::{Pubkey, PUBKEY_BYTES},
+};
 use num_traits::{FromPrimitive, ToPrimitive};
 use thiserror::Error;
 
 /// Maybe rework with thiserror 2.0
 #[derive(Debug, Error)]
 pub enum Error {
-    #[error("TODO")]
+    #[error("Program is not executable")]
     InvalidProgramExecutable,
 
-    #[error("TODO")]
+    #[error("Account is initialized yet")]
     AccountNotInitialized,
 
     // #[error("The owner of the account is not {wanted}, currently it's {current}")]
-    #[error("TODO")]
+    #[error("The current owner of the account does not match the expected one")]
     InvalidOwner { wanted: Pubkey, current: Pubkey },
 
     #[error("The given account is not mutable")]
     AccountNotMutable,
 
-    #[error("TODO")]
+    #[error("Account is not a signer")]
     AccountNotSigner,
 
-    #[error("TODO")]
+    #[error("The current owner of this account is not the expected one")]
     AccountOwnedByWrongProgram,
 
-    #[error("TODO")]
+    #[error("Failed to deserialize account data")]
     CannotDeserializeData,
 }
 
 impl FromPrimitive for Error {
     fn from_i64(n: i64) -> Option<Self> {
         match n {
-            3000 => Some(Error::AccountNotInitialized),
-
+            3000 => Some(Error::InvalidProgramExecutable),
+            3001 => Some(Error::AccountNotInitialized),
+            3002 => Some(Error::InvalidOwner {
+                current: [0; PUBKEY_BYTES],
+                wanted: [0; PUBKEY_BYTES],
+            }),
+            3003 => Some(Error::AccountNotMutable),
+            3004 => Some(Error::AccountNotSigner),
+            3005 => Some(Error::AccountOwnedByWrongProgram),
+            3006 => Some(Error::CannotDeserializeData),
             _ => None,
         }
     }
@@ -44,7 +56,18 @@ impl FromPrimitive for Error {
 
 impl ToPrimitive for Error {
     fn to_i64(&self) -> Option<i64> {
-        todo!()
+        match self {
+            Error::InvalidProgramExecutable => Some(3000),
+            Error::AccountNotInitialized => Some(3001),
+            Error::InvalidOwner {
+                current: _,
+                wanted: _,
+            } => Some(3002),
+            Error::AccountNotMutable => Some(3003),
+            Error::AccountNotSigner => Some(3004),
+            Error::AccountOwnedByWrongProgram => Some(3005),
+            Error::CannotDeserializeData => Some(3006),
+        }
     }
 
     fn to_u64(&self) -> Option<u64> {

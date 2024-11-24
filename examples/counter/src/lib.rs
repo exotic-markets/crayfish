@@ -1,6 +1,8 @@
 use {
     crayfish_account_macro::account,
-    crayfish_accounts::{Account, Mut, Program, ReadableAccount, Signer, System, WritableAccount},
+    crayfish_accounts::{
+        Account, Mut, Program, ReadableAccount, Signer, System, UncheckedAccount, WritableAccount,
+    },
     crayfish_context_macro::context,
     crayfish_handler_macro::handlers,
     crayfish_program_id_macro::program_id,
@@ -17,7 +19,7 @@ handlers! {
 
 #[context]
 pub struct InitContext<'a> {
-    pub counter: Mut<Account<'a, Counter>>,
+    pub counter: Mut<UncheckedAccount<'a>>,
     pub payer: Signer<'a>,
     pub system: Program<'a, System>,
 }

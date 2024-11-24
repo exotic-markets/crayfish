@@ -41,7 +41,7 @@ fn integration_test() {
         accounts: vec![
             AccountMeta {
                 pubkey: counter_pk,
-                is_signer: true,
+                is_signer: false,
                 is_writable: true,
             },
             AccountMeta {
@@ -58,8 +58,7 @@ fn integration_test() {
         data: vec![0],
     };
     let hash = svm.latest_blockhash();
-    let tx =
-        Transaction::new_signed_with_payer(&[ix], Some(&admin_pk), &[&admin_kp, &counter_kp], hash);
+    let tx = Transaction::new_signed_with_payer(&[ix], Some(&admin_pk), &[&admin_kp], hash);
     svm.send_transaction(tx).unwrap();
 
     let raw_account = svm.get_account(&counter_pk).unwrap();

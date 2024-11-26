@@ -8,6 +8,6 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-syn = { workspace = true, features = ["fold", "visit", "full"] }
+syn = { workspace = true, features = ["fold", "visit", "visit-mut", "full"] }
 proc-macro2.workspace = true
 quote.workspace = true

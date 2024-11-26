@@ -1,7 +1,4 @@
-use bytemuck::Pod;
-use crayfish_accounts::{
-    Account, FromAccountInfo, Mut, Owner, ReadableAccount, SystemAccount, WritableAccount,
-};
+use crayfish_accounts::{Mut, ReadableAccount, SystemAccount, WritableAccount};
 use crayfish_program::{
     program_error::ProgramError,
     pubkey::Pubkey,
@@ -27,13 +24,13 @@ pub trait SystemCpi: WritableAccount {
         .invoke()
     }
 
-    fn create_account<T: Owner + Pod>(
+    fn create_account(
         &self,
         payer: &impl ReadableAccount,
         owner: &Pubkey,
         space: u64,
         seeds: Option<&[Signer]>,
-    ) -> Result<Mut<Account<T>>, ProgramError> {
+    ) -> Result<(), ProgramError> {
         CreateAccount {
             from: payer.as_ref(),
             lamports: Rent::get()?.minimum_balance(space as usize),
@@ -41,9 +38,7 @@ pub trait SystemCpi: WritableAccount {
             space,
             to: self.as_ref(),
         }
-        .invoke_signed(seeds.unwrap_or_default())?;
-
-        Mut::try_from_info(self.as_ref())
+        .invoke_signed(seeds.unwrap_or_default())
     }
 
     fn transfer(&self, to: &impl WritableAccount, amount: u64) -> Result<(), ProgramError> {

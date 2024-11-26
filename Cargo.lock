@@ -653,8 +653,11 @@ dependencies = [
  "crayfish-program",
  "crayfish-program-id-macro",
  "crayfish-space",
+ "crayfish-traits",
+ "litesvm",
  "pinocchio",
  "pinocchio-pubkey",
+ "solana-sdk",
 ]
 
 [[package]]

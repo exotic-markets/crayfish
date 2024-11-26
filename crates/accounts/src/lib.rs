@@ -14,7 +14,7 @@ pub trait ProgramId {
 }
 
 pub trait Owner {
-    fn owner() -> Pubkey;
+    const OWNER: Pubkey;
 }
 
 pub trait ReadableAccount: AsRef<RawAccountInfo> {

@@ -1,24 +1,21 @@
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
-use syn::{spanned::Spanned, visit::Visit, Field, Ident, PathSegment, Type, TypePath};
+use syn::{spanned::Spanned, visit_mut::VisitMut, Field, Ident, PathSegment, Type, TypePath};
 
-use crate::constraints::{ConstraintList, Constraints};
+use crate::constraints::Constraints;
 
 pub struct Account {
     name: Ident,
-    constraints: Vec<String>,
+    constraints: Constraints,
     ty: PathSegment,
 }
 
-impl TryFrom<&Field> for Account {
+impl TryFrom<&mut Field> for Account {
     type Error = syn::Error;
 
-    fn try_from(value: &Field) -> Result<Self, Self::Error> {
+    fn try_from(value: &mut Field) -> Result<Self, Self::Error> {
         let mut constraints = Constraints::default();
-        for attr in &value.attrs {
-            //Add constraintes here
-            constraints.visit_attribute(attr);
-        }
+        constraints.visit_attributes_mut(&mut value.attrs);
 
         let segment = match &value.ty {
             Type::Path(TypePath { path, .. }) => path.segments.last(),
@@ -33,7 +30,7 @@ impl TryFrom<&Field> for Account {
 
         Ok(Account {
             name,
-            constraints: vec![],
+            constraints,
             ty: segment.clone(),
         })
     }
@@ -52,13 +49,30 @@ impl<'a> ToTokens for NameList<'a> {
     }
 }
 
-pub struct Assign<'a>(Vec<(&'a Ident, &'a PathSegment)>);
+pub struct Assign<'a>(Vec<(&'a Ident, &'a PathSegment, &'a Constraints)>);
 
 impl<'a> ToTokens for Assign<'a> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let assign_fields = self.0.iter().map(|(name, ty)| {
-            quote! {
-                let #name: #ty = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+        let assign_fields = self.0.iter().map(|(name, ty, c)| {
+            if c.has_init() {
+                let payer = c.get_payer();
+                let space = c.get_space();
+
+                let (Some(payer), Some(space)) = (payer, space) else {
+                    return syn::Error::new(name.span(), "Not found payer or space for the init constraint").to_compile_error()
+                };
+
+                quote! {
+                    let #name: #ty = {
+                        let system_acc = <crayfish_accounts::Mut<crayfish_accounts::SystemAccount> as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                        crayfish_traits::SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, None)?;
+                        Mut::try_from_info(#name)?
+                    };
+                }
+            }else {
+                quote! {
+                    let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                }
             }
         });
 
@@ -74,10 +88,10 @@ pub struct Accounts(pub Vec<Account>);
 
 impl Accounts {
     pub fn split_for_impl(&self) -> (NameList, Assign) {
-        let (name_list, assign): (Vec<&Ident>, Vec<(&Ident, &PathSegment)>) = self
+        let (name_list, assign): (Vec<&Ident>, Vec<(&Ident, &PathSegment, &Constraints)>) = self
             .0
             .iter()
-            .map(|el| (&el.name, (&el.name, &el.ty)))
+            .map(|el| (&el.name, (&el.name, &el.ty, &el.constraints)))
             .unzip();
 
         (NameList(name_list), Assign(assign))

@@ -12,11 +12,7 @@ pub struct SystemAccount<'a> {
 impl<'a> FromAccountInfo<'a> for SystemAccount<'a> {
     fn try_from_info(info: &'a RawAccountInfo) -> Result<Self, ProgramError> {
         if info.owner() != &system_program::ID {
-            return Err(Error::InvalidOwner {
-                wanted: system_program::ID,
-                current: *info.owner(),
-            }
-            .into());
+            return Err(Error::AccountOwnedByWrongProgram.into());
         }
 
         Ok(SystemAccount { info })

@@ -22,7 +22,7 @@ where
     T: ProgramId,
 {
     fn try_from_info(info: &'a RawAccountInfo) -> Result<Self, ProgramError> {
-        if info.owner() != &T::ID {
+        if info.key() != &T::ID {
             return Err(Error::AccountOwnedByWrongProgram.into());
         }
 

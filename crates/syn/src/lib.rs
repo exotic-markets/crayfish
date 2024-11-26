@@ -7,9 +7,9 @@ mod accounts;
 mod constraints;
 mod lifetime;
 
-pub struct ContextAttributes {
-    args: Vec<String>,
-}
+// pub struct ContextAttributes {
+//     args: Vec<String>,
+// }
 
 // impl Fold for ContextAttributes {
 //     fn fold_item_struct(&mut self, i: syn::ItemStruct) -> syn::ItemStruct {
@@ -30,10 +30,10 @@ impl Parse for Context {
         let item: Item = input.parse()?;
 
         match item {
-            Item::Struct(item_struct) => {
+            Item::Struct(mut item_struct) => {
                 let accounts = item_struct
                     .fields
-                    .iter()
+                    .iter_mut()
                     .map(Account::try_from)
                     .collect::<Result<Vec<Account>, syn::Error>>()?;
 

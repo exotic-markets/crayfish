@@ -26,6 +26,7 @@ crayfish-program-id-macro = { version = "0.1.0", path = "crates/program-id-macro
 crayfish-space = { version = "0.1.0", path = "crates/space" }
 crayfish-space-macro = { version = "0.1.0", path = "crates/space-macro" }
 crayfish-syn = { version = "0.1.0", path = "crates/syn" }
+crayfish-traits = { version = "0.1.0", path = "crates/traits" }
 heck = "0.5.0"
 litesvm = "0.3.0"
 nostd-system-program = { git = "https://github.com/Aursen/nostdinfo-programs" }

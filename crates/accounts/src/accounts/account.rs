@@ -19,7 +19,7 @@ where
     T: Owner + Pod,
 {
     fn try_from_info(info: &'a RawAccountInfo) -> Result<Self, ProgramError> {
-        if info.owner() != &T::owner() {
+        if info.owner() != &T::OWNER {
             return Err(Error::AccountOwnedByWrongProgram.into());
         }
 

@@ -1,9 +1,4 @@
-use syn::{
-    parse::{Parse, ParseBuffer, ParseStream},
-    spanned::Spanned,
-    visit::Visit,
-    Expr, ExprAssign, Ident, Token,
-};
+use syn::{parse::Parse, visit::Visit, Ident, Token};
 
 #[derive(Default)]
 pub struct Constraints(Vec<String>);

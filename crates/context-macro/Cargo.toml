@@ -11,6 +11,6 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
-crayfish-syn.workspace = true
-syn.workspace = true
+syn = { workspace = true, features = ["fold", "visit", "full"] }
 quote.workspace = true
+proc-macro2.workspace = true

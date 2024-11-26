@@ -34,10 +34,7 @@ impl VisitMut for Constraints {
 
 impl Constraints {
     pub fn has_init(&self) -> bool {
-        self.0
-            .iter()
-            .find(|c| matches!(c, Constraint::Init(_)))
-            .is_some()
+        self.0.iter().any(|c| matches!(&c, Constraint::Init(_)))
     }
 
     pub fn get_payer(&self) -> Option<&Expr> {

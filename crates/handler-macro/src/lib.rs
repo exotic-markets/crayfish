@@ -73,7 +73,7 @@ impl ToTokens for Handlers {
 fn is_pinocchio() -> syn::Result<bool> {
     let cargo_toml_path = get_cargo_toml()?;
 
-    let content = std::fs::read_to_string(&cargo_toml_path)
+    let content = std::fs::read_to_string(cargo_toml_path)
         .map_err(|_| syn::Error::new(Span::call_site(), "Cannot read the Cargo.toml file."))?;
 
     Ok(content.contains("features = [\"pinocchio\"]"))

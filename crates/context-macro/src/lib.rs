@@ -2,9 +2,7 @@ use accounts::{Account, Accounts};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::{quote, ToTokens};
-use syn::{
-    fold::Fold, parse::Parse, parse_macro_input, spanned::Spanned, Generics, Ident, Item, Lifetime,
-};
+use syn::{parse::Parse, parse_macro_input, spanned::Spanned, Generics, Ident, Item, Lifetime};
 
 mod accounts;
 mod constraints;

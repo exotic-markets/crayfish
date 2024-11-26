@@ -14,7 +14,7 @@ pub fn main() {
         .join("Cargo.toml")
         .canonicalize()
         .unwrap();
-    let manifest = Manifest::from_path(&manifest_path).unwrap();
+    let manifest = Manifest::from_path(manifest_path).unwrap();
 
     if let Some(workspace) = manifest.workspace {
         println!("{workspace:?}");

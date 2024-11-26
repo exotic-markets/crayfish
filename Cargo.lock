@@ -699,7 +699,7 @@ dependencies = [
 name = "crayfish-context-macro"
 version = "0.1.0"
 dependencies = [
- "crayfish-syn",
+ "proc-macro2",
  "quote",
  "syn 2.0.85",
 ]
@@ -773,15 +773,6 @@ dependencies = [
 
 [[package]]
 name = "crayfish-space-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.85",
-]
-
-[[package]]
-name = "crayfish-syn"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",

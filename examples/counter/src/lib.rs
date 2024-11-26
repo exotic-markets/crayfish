@@ -1,7 +1,5 @@
 use crayfish_account_macro::account;
-use crayfish_accounts::{
-    Account, FromAccountInfo, Mut, Owner, Program, Signer, System, WritableAccount,
-};
+use crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount};
 use crayfish_context_macro::context;
 use crayfish_handler_macro::handlers;
 use crayfish_program_id_macro::program_id;
@@ -32,7 +30,7 @@ handlers! {
     increment
 }
 
-pub fn initialize(InitContext { .. }: InitContext) -> Result<(), ProgramError> {
+pub fn initialize(_: InitContext) -> Result<(), ProgramError> {
     Ok(())
 }
 

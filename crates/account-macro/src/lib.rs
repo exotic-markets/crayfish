@@ -1,6 +1,8 @@
-use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
-use syn::{parse_macro_input, spanned::Spanned, Error, Item};
+use {
+    proc_macro::TokenStream,
+    quote::{quote, ToTokens},
+    syn::{parse_macro_input, spanned::Spanned, Error, Item},
+};
 
 #[proc_macro_attribute]
 pub fn account(_attr: TokenStream, item: TokenStream) -> TokenStream {

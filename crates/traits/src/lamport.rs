@@ -1,5 +1,7 @@
-use crayfish_accounts::{Mut, Signer, SignerAccount, WritableAccount};
-use crayfish_program::program_error::ProgramError;
+use {
+    crayfish_accounts::{Mut, Signer, SignerAccount, WritableAccount},
+    crayfish_program::program_error::ProgramError,
+};
 
 pub trait Lamports: WritableAccount + SignerAccount {
     fn send(&self, to: &impl WritableAccount, amount: u64) -> Result<(), ProgramError> {

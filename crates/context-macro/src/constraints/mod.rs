@@ -4,6 +4,12 @@ use syn::{
     Expr, Ident, Token,
 };
 
+mod init;
+mod payer;
+mod space;
+
+use {init::*, payer::*, space::*};
+
 //TODO rewrite it to add custom constraint for users
 pub enum Constraint {
     Init(ConstraintInit),
@@ -12,7 +18,7 @@ pub enum Constraint {
 }
 
 #[derive(Default)]
-pub struct Constraints(pub Vec<Constraint>);
+pub struct Constraints(Vec<Constraint>);
 
 impl VisitMut for Constraints {
     fn visit_attributes_mut(&mut self, attrs: &mut Vec<syn::Attribute>) {
@@ -83,31 +89,3 @@ pub fn parse_constraints(input: ParseStream) -> syn::Result<Vec<Constraint>> {
 
     Ok(constraints)
 }
-
-pub struct ConstraintPayer {
-    pub target: Expr,
-}
-
-impl Parse for ConstraintPayer {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        let _punct: Token![=] = input.parse()?;
-        let target = input.parse()?;
-
-        Ok(ConstraintPayer { target })
-    }
-}
-
-pub struct ConstraintSpace {
-    pub space: Expr,
-}
-
-impl Parse for ConstraintSpace {
-    fn parse(input: ParseStream) -> syn::Result<Self> {
-        let _punct: Token![=] = input.parse()?;
-        let space = input.parse()?;
-
-        Ok(ConstraintSpace { space })
-    }
-}
-
-pub struct ConstraintInit;

@@ -1,6 +1,7 @@
-use crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref};
-
-use crate::{FromAccountInfo, ReadableAccount};
+use {
+    crate::{FromAccountInfo, ReadableAccount},
+    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
+};
 
 pub struct UncheckedAccount<'a> {
     info: &'a RawAccountInfo,

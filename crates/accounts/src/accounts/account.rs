@@ -1,10 +1,10 @@
-use std::marker::PhantomData;
-
-use bytemuck::Pod;
-use crayfish_errors::Error;
-use crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref};
-
-use crate::{readable::Readable, FromAccountInfo, Owner, ReadableAccount};
+use {
+    crate::{readable::Readable, FromAccountInfo, Owner, ReadableAccount},
+    bytemuck::Pod,
+    crayfish_errors::Error,
+    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
+    std::marker::PhantomData,
+};
 
 pub struct Account<'a, T>
 where

@@ -5,9 +5,4 @@ mod signer;
 mod system;
 mod unchecked;
 
-pub use account::*;
-pub use mutable::*;
-pub use program::*;
-pub use signer::*;
-pub use system::*;
-pub use unchecked::*;
+pub use {account::*, mutable::*, program::*, signer::*, system::*, unchecked::*};

@@ -1,5 +1,7 @@
-use crayfish_program::pubkey::Pubkey;
-use crayfish_space::{InitSpace, Space};
+use {
+    crayfish_program::pubkey::Pubkey,
+    crayfish_space::{InitSpace, Space},
+};
 
 mod inside_mod {
     use super::*;

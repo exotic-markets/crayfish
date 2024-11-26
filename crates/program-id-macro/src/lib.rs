@@ -1,11 +1,12 @@
-use std::env::var;
-
-use cargo_manifest::Manifest;
-use heck::ToUpperCamelCase;
-use proc_macro::TokenStream;
-use proc_macro2::Span;
-use quote::{quote, ToTokens};
-use syn::{parse::Parse, parse_macro_input, Ident, LitStr};
+use {
+    cargo_manifest::Manifest,
+    heck::ToUpperCamelCase,
+    proc_macro::TokenStream,
+    proc_macro2::Span,
+    quote::{quote, ToTokens},
+    std::env::var,
+    syn::{parse::Parse, parse_macro_input, Ident, LitStr},
+};
 
 #[proc_macro]
 pub fn program_id(item: TokenStream) -> TokenStream {

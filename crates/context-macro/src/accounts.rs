@@ -1,8 +1,9 @@
-use proc_macro2::{Span, TokenStream};
-use quote::{quote, ToTokens};
-use syn::{spanned::Spanned, visit_mut::VisitMut, Field, Ident, PathSegment, Type, TypePath};
-
-use crate::constraints::Constraints;
+use {
+    crate::constraints::Constraints,
+    proc_macro2::{Span, TokenStream},
+    quote::{quote, ToTokens},
+    syn::{spanned::Spanned, visit_mut::VisitMut, Field, Ident, PathSegment, Type, TypePath},
+};
 
 pub struct Account {
     name: Ident,

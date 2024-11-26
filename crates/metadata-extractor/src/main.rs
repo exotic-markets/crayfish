@@ -1,10 +1,10 @@
-use std::{
-    path::Path,
-    process::{Command, Stdio},
+use {
+    crayfish_metadata_extractor::parsing::ParsingContext,
+    std::{
+        path::Path,
+        process::{Command, Stdio},
+    },
 };
-
-use crayfish_metadata_extractor::parsing::ParsingContext;
-use syn::Ident;
 
 pub fn main() {
     use cargo_manifest::Manifest;
@@ -37,12 +37,10 @@ pub fn main() {
         let content = String::from_utf8(command).unwrap();
         let file = syn::parse_file(&content).unwrap();
 
-        file.items.iter().for_each(|item| match item {
-            syn::Item::Struct(item_struct) => {
+        file.items.iter().for_each(|item| {
+            if let syn::Item::Struct(item_struct) = item {
                 println!("{item_struct:#?}")
             }
-
-            _ => (),
         });
 
         let context = ParsingContext::from(&file);
@@ -181,19 +179,4 @@ pub fn main() {
         // println!("{context:?}")
     }
 }
-
-fn extract_context_ident(item_impl: &syn::ItemImpl) -> Option<&Ident> {
-    let trait_ = item_impl.trait_.as_ref()?;
-    let segment = trait_.1.segments.last()?;
-
-    if segment.ident != "HandlerContext" {
-        return None;
-    }
-
-    match *item_impl.self_ty {
-        syn::Type::Path(ref type_path) => Some(&type_path.path.segments.last()?.ident),
-        _ => None,
-    }
-}
-
 // fn extract_instruction_idents()

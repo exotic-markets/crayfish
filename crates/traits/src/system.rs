@@ -1,10 +1,12 @@
-use crayfish_accounts::{Mut, ReadableAccount, SystemAccount, WritableAccount};
-use crayfish_program::{
-    program_error::ProgramError,
-    pubkey::Pubkey,
-    system_program::instructions::{Allocate, Assign, CreateAccount, Transfer},
-    sysvars::{rent::Rent, Sysvar},
-    Signer,
+use {
+    crayfish_accounts::{Mut, ReadableAccount, SystemAccount, WritableAccount},
+    crayfish_program::{
+        program_error::ProgramError,
+        pubkey::Pubkey,
+        system_program::instructions::{Allocate, Assign, CreateAccount, Transfer},
+        sysvars::{rent::Rent, Sysvar},
+        Signer,
+    },
 };
 
 pub trait SystemCpi: WritableAccount {

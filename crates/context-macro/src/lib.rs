@@ -1,8 +1,10 @@
-use accounts::{Account, Accounts};
-use proc_macro::TokenStream;
-use proc_macro2::Span;
-use quote::{quote, ToTokens};
-use syn::{parse::Parse, parse_macro_input, spanned::Spanned, Generics, Ident, Item, Lifetime};
+use {
+    accounts::{Account, Accounts},
+    proc_macro::TokenStream,
+    proc_macro2::Span,
+    quote::{quote, ToTokens},
+    syn::{parse::Parse, parse_macro_input, spanned::Spanned, Generics, Ident, Item, Lifetime},
+};
 
 mod accounts;
 mod constraints;

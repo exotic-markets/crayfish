@@ -1,6 +1,4 @@
-use crayfish_program::system_program;
-
-use crate::ProgramId;
+use {crate::ProgramId, crayfish_program::system_program};
 
 pub struct System;
 

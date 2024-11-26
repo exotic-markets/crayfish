@@ -1,10 +1,10 @@
-use std::env::var;
-
-use proc_macro::TokenStream;
-use proc_macro2::Span;
-use quote::quote;
-use quote::ToTokens;
-use syn::{parse::Parse, parse_macro_input, punctuated::Punctuated, Path, Token};
+use {
+    proc_macro::TokenStream,
+    proc_macro2::Span,
+    quote::{quote, ToTokens},
+    std::env::var,
+    syn::{parse::Parse, parse_macro_input, punctuated::Punctuated, Path, Token},
+};
 
 #[proc_macro]
 pub fn handlers(item: TokenStream) -> TokenStream {

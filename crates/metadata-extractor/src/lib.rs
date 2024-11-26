@@ -1,15 +1,8 @@
-use doc::Docs;
-use parsing::ParsingContext;
-use syn::{
-    visit::Visit, Field, File, GenericArgument, Ident, Item, PathArguments, PathSegment, Type,
-};
-
 mod doc;
 mod instruction;
 pub mod parsing;
 
-pub use doc::*;
-pub use instruction::*;
+pub use {doc::*, instruction::*};
 
 // pub struct StateField<'a> {
 //     pub name: &'a Ident,

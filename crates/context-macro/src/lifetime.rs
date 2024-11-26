@@ -1,5 +1,7 @@
-use proc_macro2::Span;
-use syn::{fold::Fold, parse_str, Lifetime, PathArguments};
+use {
+    proc_macro2::Span,
+    syn::{fold::Fold, parse_str, Lifetime, PathArguments},
+};
 
 pub struct InjectLifetime;
 

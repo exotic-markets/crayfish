@@ -1,9 +1,9 @@
-use std::{mem::size_of, ops::Deref};
-
-use bytemuck::Pod;
-use crayfish_program::{program_error::ProgramError, RawAccountInfo};
-
-use crate::HandlerContext;
+use {
+    crate::HandlerContext,
+    bytemuck::Pod,
+    crayfish_program::{program_error::ProgramError, RawAccountInfo},
+    std::{mem::size_of, ops::Deref},
+};
 
 #[repr(C, align(8))]
 pub struct Args<'a, T>(&'a T); //Constraint trait Aligned

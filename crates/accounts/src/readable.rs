@@ -1,6 +1,4 @@
-use bytemuck::Pod;
-
-use crate::Owner;
+use {crate::Owner, bytemuck::Pod};
 
 pub trait Readable {
     fn read(data: &[u8]) -> Option<&Self>;

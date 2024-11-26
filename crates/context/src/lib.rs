@@ -1,5 +1,7 @@
-use crayfish_program::{program_error::ProgramError, RawAccountInfo};
-use paste::paste;
+use {
+    crayfish_program::{program_error::ProgramError, RawAccountInfo},
+    paste::paste,
+};
 
 pub mod args;
 mod remaining_accounts;

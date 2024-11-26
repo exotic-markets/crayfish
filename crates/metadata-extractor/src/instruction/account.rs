@@ -1,6 +1,7 @@
-use syn::{visit::Visit, Field, GenericArgument, PathArguments, PathSegment, Type};
-
-use crate::doc::Docs;
+use {
+    crate::doc::Docs,
+    syn::{visit::Visit, Field, GenericArgument, PathArguments, PathSegment, Type},
+};
 
 #[derive(Debug, Default)]
 pub struct AccountFlags {

@@ -1,6 +1,8 @@
-use crayfish_program::{msg, program_error::ProgramError};
-use num_traits::{FromPrimitive, ToPrimitive};
-use thiserror::Error;
+use {
+    crayfish_program::{msg, program_error::ProgramError},
+    num_traits::{FromPrimitive, ToPrimitive},
+    thiserror::Error,
+};
 
 /// Maybe rework with thiserror 2.0
 #[derive(Debug, Error)]

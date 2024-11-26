@@ -1,9 +1,9 @@
-use std::marker::PhantomData;
-
-use crayfish_errors::Error;
-use crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref};
-
-use crate::{FromAccountInfo, ProgramId, ReadableAccount};
+use {
+    crate::{FromAccountInfo, ProgramId, ReadableAccount},
+    crayfish_errors::Error,
+    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
+    std::marker::PhantomData,
+};
 
 ///
 /// Checks:

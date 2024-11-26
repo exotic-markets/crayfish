@@ -1,10 +1,12 @@
-use crayfish_account_macro::account;
-use crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount};
-use crayfish_context_macro::context;
-use crayfish_handler_macro::handlers;
-use crayfish_program_id_macro::program_id;
-use crayfish_space::{InitSpace, Space};
-use pinocchio::{entrypoint, msg, program_error::ProgramError};
+use {
+    crayfish_account_macro::account,
+    crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount},
+    crayfish_context_macro::context,
+    crayfish_handler_macro::handlers,
+    crayfish_program_id_macro::program_id,
+    crayfish_space::{InitSpace, Space},
+    pinocchio::{entrypoint, msg, program_error::ProgramError},
+};
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 

@@ -1,9 +1,10 @@
-use crayfish_errors::Error;
-use crayfish_program::{
-    program_error::ProgramError, pubkey::Pubkey, system_program, RawAccountInfo, Ref,
+use {
+    crate::{FromAccountInfo, ReadableAccount},
+    crayfish_errors::Error,
+    crayfish_program::{
+        program_error::ProgramError, pubkey::Pubkey, system_program, RawAccountInfo, Ref,
+    },
 };
-
-use crate::{FromAccountInfo, ReadableAccount};
 
 pub struct SystemAccount<'a> {
     info: &'a RawAccountInfo,

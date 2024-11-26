@@ -1,9 +1,10 @@
-use std::path::PathBuf;
-
-use litesvm::LiteSVM;
-use solana_sdk::{
-    instruction::Instruction, native_token::LAMPORTS_PER_SOL, pubkey, signature::Keypair,
-    signer::Signer, transaction::Transaction,
+use {
+    litesvm::LiteSVM,
+    solana_sdk::{
+        instruction::Instruction, native_token::LAMPORTS_PER_SOL, pubkey, signature::Keypair,
+        signer::Signer, transaction::Transaction,
+    },
+    std::path::PathBuf,
 };
 
 fn read_program() -> Vec<u8> {

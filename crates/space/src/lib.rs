@@ -1,5 +1,4 @@
 use crayfish_program::pubkey::Pubkey;
-
 pub use crayfish_space_macro::Space;
 
 /// Defines the space of an account for initialization.

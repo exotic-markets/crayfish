@@ -1,9 +1,12 @@
 use {
     accounts::{Account, Accounts},
+    lifetime::InjectLifetime,
     proc_macro::TokenStream,
-    proc_macro2::Span,
     quote::{quote, ToTokens},
-    syn::{parse::Parse, parse_macro_input, spanned::Spanned, Generics, Ident, Item, Lifetime},
+    syn::{
+        parse::Parse, parse_macro_input, parse_quote, spanned::Spanned, visit_mut::VisitMut,
+        Generics, Ident, Item, Lifetime,
+    },
 };
 
 mod accounts;
@@ -35,7 +38,10 @@ struct Context {
 }
 impl Parse for Context {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        let item: Item = input.parse()?;
+        let mut item: Item = input.parse()?;
+
+        let mut injector = InjectLifetime;
+        injector.visit_item_mut(&mut item);
 
         match item {
             Item::Struct(mut item_struct) => {
@@ -68,7 +74,7 @@ impl ToTokens for Context {
         let generics = &self.generics;
 
         let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-        let new_lifetime = Lifetime::new("'a", Span::call_site());
+        let new_lifetime: Lifetime = parse_quote!('info);
         let (name_list, assign) = self.accounts.split_for_impl();
 
         let expanded = quote! {
@@ -76,8 +82,8 @@ impl ToTokens for Context {
 
             impl #impl_generics crayfish_context::HandlerContext<#new_lifetime> for #name #ty_generics #where_clause {
                 fn from_entrypoint(
-                    accounts: &mut &'a [crayfish_program::RawAccountInfo],
-                    instruction_data: &mut &'a [u8],
+                    accounts: &mut &'info [crayfish_program::RawAccountInfo],
+                    instruction_data: &mut &'info [u8],
                 ) -> Result<Self, ProgramError> {
                     let [#name_list, rem @ ..] = accounts else {
                         return Err(ProgramError::NotEnoughAccountKeys);

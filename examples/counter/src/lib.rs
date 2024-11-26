@@ -11,20 +11,20 @@ use {
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
 #[context]
-pub struct InitContext<'a> {
-    pub payer: Signer<'a>,
+pub struct InitContext {
+    pub payer: Signer,
     #[constraint(
         init,
         payer = payer,
         space = Counter::INIT_SPACE
     )]
-    pub counter: Mut<Account<'a, Counter>>,
-    pub system: Program<'a, System>,
+    pub counter: Mut<Account<Counter>>,
+    pub system: Program<System>,
 }
 
 #[context]
-pub struct IncrementContext<'a> {
-    pub counter: Mut<Account<'a, Counter>>,
+pub struct IncrementContext {
+    pub counter: Mut<Account<Counter>>,
 }
 
 handlers! {

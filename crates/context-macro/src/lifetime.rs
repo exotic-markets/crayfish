@@ -1,49 +1,29 @@
-use {
-    proc_macro2::Span,
-    syn::{fold::Fold, parse_str, Lifetime, PathArguments},
-};
+use syn::{parse_quote, visit_mut::VisitMut, PathArguments};
 
 pub struct InjectLifetime;
 
-impl Fold for InjectLifetime {
-    // fn fold_item(&mut self, i: syn::Item) -> syn::Item {
-    //     match i {
-    //         syn::Item::Enum(item_enum) => todo!(),
-    //         syn::Item::Fn(item_fn) => todo!(),
-    //         syn::Item::Impl(item_impl) => todo!(),
-    //         // syn::Item::Struct(item_struct) => {}
-    //         syn::Item::Trait(item_trait) => {
-    //             // item_trait
-    //             // item_trait.
-    //             todo!()
-    //         }
-    //         _ => i,
-    //     }
-    // }
+impl VisitMut for InjectLifetime {
+    fn visit_generics_mut(&mut self, i: &mut syn::Generics) {
+        i.params.push(parse_quote!('info));
+    }
 
-    // fn fold_generics(&mut self, i: syn::Generics) -> syn::Generics {
-    //     for lifetime in i.lifetimes_mut() {
-    //         lifetime.
-    //     }
-    // }
-
-    fn fold_type_path(&mut self, mut i: syn::TypePath) -> syn::TypePath {
+    fn visit_type_path_mut(&mut self, i: &mut syn::TypePath) {
         if let Some(seg) = i.path.segments.last_mut() {
+            if seg.ident == "Mut" || seg.ident == "Option" {
+                self.visit_path_segment_mut(seg);
+
+                return;
+            }
+
             match seg.arguments {
                 PathArguments::AngleBracketed(ref mut gen_args) => {
-                    gen_args.args.insert(
-                        0,
-                        syn::GenericArgument::Lifetime(Lifetime::new("'info", Span::call_site())),
-                    );
+                    gen_args.args.insert(0, parse_quote!('info));
                 }
                 PathArguments::None => {
-                    if let Ok(lifetime) = parse_str("<'info>") {
-                        seg.arguments = PathArguments::AngleBracketed(lifetime);
-                    }
+                    seg.arguments = PathArguments::AngleBracketed(parse_quote!(<'info>));
                 }
                 PathArguments::Parenthesized(_) => {}
             }
         }
-        i
     }
 }

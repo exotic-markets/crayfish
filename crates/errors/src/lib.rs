@@ -21,9 +21,6 @@ pub enum Error {
 
     #[error("The current owner of this account is not the expected one")]
     AccountOwnedByWrongProgram,
-
-    #[error("Failed to deserialize account data")]
-    CannotDeserializeData,
 }
 
 impl FromPrimitive for Error {
@@ -34,7 +31,6 @@ impl FromPrimitive for Error {
             3002 => Some(Error::AccountNotMutable),
             3003 => Some(Error::AccountNotSigner),
             3004 => Some(Error::AccountOwnedByWrongProgram),
-            3005 => Some(Error::CannotDeserializeData),
             _ => None,
         }
     }
@@ -52,7 +48,6 @@ impl ToPrimitive for Error {
             Error::AccountNotMutable => Some(3002),
             Error::AccountNotSigner => Some(3003),
             Error::AccountOwnedByWrongProgram => Some(3004),
-            Error::CannotDeserializeData => Some(3005),
         }
     }
 

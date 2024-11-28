@@ -38,31 +38,37 @@ impl ToTokens for Handlers {
             }
         });
 
-        let expanded = if self.is_pinocchio {
+        let entrypoint = if self.is_pinocchio {
             quote! {
                 pinocchio::entrypoint!(process_instruction);
-
-                pub fn process_instruction(
-                    _program_id: &pinocchio::pubkey::Pubkey,
-                    accounts: &[pinocchio::account_info::AccountInfo],
-                    instruction_data: &[u8],
-                ) -> pinocchio::ProgramResult {
-                    let (instruction_discriminant, instruction_data_inner) = instruction_data.split_at(1);
-                    match instruction_discriminant[0] {
-                        #(#instructions)*
-                        _ => {
-                            msg!("Error: unknown instruction") //TODO
-                        },
-                    }
-                    Ok(())
-                }
             }
         } else {
             quote! {
+                use solana_nostd_entrypoint::NoStdAccountInfo;
+
                 solana_nostd_entrypoint::entrypoint_nostd!(process_instruction, 32);
 
                 solana_nostd_entrypoint::noalloc_allocator!();
                 solana_nostd_entrypoint::basic_panic_impl!();
+            }
+        };
+
+        let expanded = quote! {
+            #entrypoint
+
+            pub fn process_instruction(
+                _program_id: &crayfish_program::pubkey::Pubkey,
+                accounts: &[crayfish_program::RawAccountInfo],
+                instruction_data: &[u8],
+            ) -> crayfish_program::ProgramResult {
+                let (instruction_discriminant, instruction_data_inner) = instruction_data.split_at(1);
+                match instruction_discriminant[0] {
+                    #(#instructions)*
+                    _ => {
+                        crayfish_program::msg!("Error: unknown instruction") //TODO
+                    },
+                }
+                Ok(())
             }
         };
 

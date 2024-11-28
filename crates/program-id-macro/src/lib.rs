@@ -43,7 +43,7 @@ impl ToTokens for ProgramId {
             pub struct #name;
 
             impl crayfish_accounts::ProgramId for #name {
-                const ID: crayfish_program::Pubkey = crate::ID;
+                const ID: crayfish_program::pubkey::Pubkey = crate::ID;
             }
         }
         .to_tokens(tokens);

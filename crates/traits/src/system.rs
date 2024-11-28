@@ -1,5 +1,7 @@
 use {
-    crayfish_accounts::{Mut, ReadableAccount, SystemAccount, WritableAccount},
+    crayfish_accounts::{
+        Mut, ReadableAccount, Signer as SignerAccount, SystemAccount, WritableAccount,
+    },
     crayfish_program::{
         program_error::ProgramError,
         pubkey::Pubkey,
@@ -54,3 +56,4 @@ pub trait SystemCpi: WritableAccount {
 }
 
 impl<'a> SystemCpi for Mut<SystemAccount<'a>> {}
+impl<'a> SystemCpi for Mut<SignerAccount<'a>> {}

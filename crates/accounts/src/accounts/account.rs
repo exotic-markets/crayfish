@@ -60,9 +60,7 @@ where
     fn data(&self) -> Result<Ref<Self::DataType>, ProgramError> {
         let data = self.info.try_borrow_data()?;
 
-        Ok(
-            Ref::filter_map(data, |data| T::read(data))
-                .map_err(|_| Error::CannotDeserializeData)?,
-        )
+        Ok(Ref::filter_map(data, |data| T::read(data))
+            .map_err(|_| ProgramError::InvalidAccountData)?)
     }
 }

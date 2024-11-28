@@ -8,4 +8,4 @@ pub use {
 pub type RawAccountInfo = AccountInfo;
 pub type Signer<'a, 'b> = instruction::Signer<'a, 'b>;
 
-pub use {pinocchio::pubkey::Pubkey, pinocchio_pubkey::declare_id};
+pub use pinocchio_pubkey::declare_id;

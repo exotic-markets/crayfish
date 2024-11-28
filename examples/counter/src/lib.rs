@@ -5,7 +5,7 @@ use {
     crayfish_handler_macro::handlers,
     crayfish_program_id_macro::program_id,
     crayfish_space::{InitSpace, Space},
-    pinocchio::{entrypoint, msg, program_error::ProgramError},
+    pinocchio::{entrypoint, program_error::ProgramError},
 };
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

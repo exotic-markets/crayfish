@@ -1,7 +1,9 @@
 pub use {
     nostd_system_program as system_program,
-    solana_nostd_entrypoint::solana_program::entrypoint::ProgramResult,
-    solana_nostd_entrypoint::{solana_program::*, Ref, RefMut},
+    solana_nostd_entrypoint::{
+        solana_program::{entrypoint::ProgramResult, *},
+        Ref, RefMut,
+    },
 };
 
 pub mod sysvars {

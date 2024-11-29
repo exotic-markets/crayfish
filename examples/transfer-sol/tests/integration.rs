@@ -76,7 +76,7 @@ fn integration_test() {
     let pre_ix = solana_sdk::system_instruction::create_account(
         &admin_pk,
         &program_acc_pk,
-        1 * LAMPORTS_PER_SOL,
+        LAMPORTS_PER_SOL,
         0,
         &program_id,
     );

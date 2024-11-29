@@ -3,8 +3,8 @@ use {
     crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount},
     crayfish_context_macro::context,
     crayfish_handler_macro::handlers,
+    crayfish_program::program_error::ProgramError,
     crayfish_program_id_macro::program_id,
-    pinocchio::{entrypoint, program_error::ProgramError},
 };
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

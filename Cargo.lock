@@ -673,7 +673,8 @@ dependencies = [
  "crayfish-traits",
  "litesvm",
  "pinocchio",
- "pinocchio-pubkey",
+ "solana-nostd-entrypoint",
+ "solana-program 1.18.26",
  "solana-sdk",
 ]
 
@@ -1305,7 +1306,6 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 name = "hello-world"
 version = "0.1.0"
 dependencies = [
- "bytemuck",
  "crayfish-accounts",
  "crayfish-context",
  "crayfish-context-macro",
@@ -1314,7 +1314,8 @@ dependencies = [
  "crayfish-program-id-macro",
  "litesvm",
  "pinocchio",
- "pinocchio-pubkey",
+ "solana-nostd-entrypoint",
+ "solana-program 1.18.26",
  "solana-sdk",
 ]
 
@@ -3560,6 +3561,7 @@ dependencies = [
  "crayfish-program-id-macro",
  "crayfish-traits",
  "litesvm",
+ "pinocchio",
  "solana-nostd-entrypoint",
  "solana-program 1.18.26",
  "solana-sdk",

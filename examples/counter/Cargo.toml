@@ -7,10 +7,12 @@ publish = false
 [lib]
 crate-type = ["cdylib", "lib"]
 
+[features]
+default = ["solana-nostd-entrypoint", "solana-program"]
+pinocchio = ["dep:pinocchio", "crayfish-program/pinocchio"]
+
 [dependencies]
-bytemuck = { workspace = true, features = ["derive"] }
-pinocchio.workspace = true
-pinocchio-pubkey.workspace = true
+bytemuck.workspace = true
 crayfish-accounts.workspace = true
 crayfish-account-macro.workspace = true
 crayfish-context.workspace = true
@@ -20,6 +22,9 @@ crayfish-program = { workspace = true, features = ["pinocchio"] }
 crayfish-program-id-macro.workspace = true
 crayfish-space.workspace = true
 crayfish-traits.workspace = true
+pinocchio = { workspace = true, optional = true }
+solana-nostd-entrypoint = { workspace = true, optional = true }
+solana-program = { workspace = true, optional = true }
 
 [dev-dependencies]
 litesvm.workspace = true

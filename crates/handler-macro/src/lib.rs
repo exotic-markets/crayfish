@@ -1,8 +1,6 @@
 use {
     proc_macro::TokenStream,
-    proc_macro2::Span,
     quote::{quote, ToTokens},
-    std::env::var,
     syn::{parse::Parse, parse_macro_input, punctuated::Punctuated, Path, Token},
 };
 
@@ -15,17 +13,13 @@ pub fn handlers(item: TokenStream) -> TokenStream {
 
 struct Handlers {
     instructions: Punctuated<Path, Token![,]>,
-    is_pinocchio: bool,
 }
 
 impl Parse for Handlers {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         let instructions = Punctuated::<Path, Token![,]>::parse_terminated(input)?;
 
-        Ok(Handlers {
-            instructions,
-            is_pinocchio: is_pinocchio()?,
-        })
+        Ok(Handlers { instructions })
     }
 }
 
@@ -38,23 +32,8 @@ impl ToTokens for Handlers {
             }
         });
 
-        let entrypoint = if self.is_pinocchio {
-            quote! {
-                pinocchio::entrypoint!(process_instruction);
-            }
-        } else {
-            quote! {
-                use solana_nostd_entrypoint::NoStdAccountInfo;
-
-                solana_nostd_entrypoint::entrypoint_nostd!(process_instruction, 32);
-
-                solana_nostd_entrypoint::noalloc_allocator!();
-                solana_nostd_entrypoint::basic_panic_impl!();
-            }
-        };
-
         let expanded = quote! {
-            #entrypoint
+            crayfish_program::program_entrypoint!(process_instruction);
 
             pub fn process_instruction(
                 _program_id: &crayfish_program::pubkey::Pubkey,
@@ -74,20 +53,4 @@ impl ToTokens for Handlers {
 
         expanded.to_tokens(tokens);
     }
-}
-
-fn is_pinocchio() -> syn::Result<bool> {
-    let cargo_toml_path = get_cargo_toml()?;
-
-    let content = std::fs::read_to_string(cargo_toml_path)
-        .map_err(|_| syn::Error::new(Span::call_site(), "Cannot read the Cargo.toml file."))?;
-
-    Ok(content.contains("features = [\"pinocchio\"]"))
-}
-
-fn get_cargo_toml() -> syn::Result<String> {
-    let crate_dir = var("CARGO_MANIFEST_DIR")
-        .map_err(|_| syn::Error::new(Span::call_site(), "Not in valid rust project."))?;
-
-    Ok(format!("{crate_dir}/Cargo.toml"))
 }

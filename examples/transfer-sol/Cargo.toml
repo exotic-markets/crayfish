@@ -7,6 +7,10 @@ publish = false
 [lib]
 crate-type = ["cdylib", "lib"]
 
+[features]
+default = ["solana-nostd-entrypoint", "solana-program"]
+pinocchio = ["dep:pinocchio", "crayfish-program/pinocchio"]
+
 [dependencies]
 crayfish-accounts.workspace = true
 crayfish-context.workspace = true
@@ -15,8 +19,9 @@ crayfish-handler-macro.workspace = true
 crayfish-program.workspace = true
 crayfish-traits.workspace = true
 crayfish-program-id-macro.workspace = true
-solana-nostd-entrypoint.workspace = true
-solana-program.workspace = true
+pinocchio = { workspace = true, optional = true }
+solana-nostd-entrypoint = { workspace = true, optional = true }
+solana-program = { workspace = true, optional = true }
 
 [dev-dependencies]
 aligned.workspace = true

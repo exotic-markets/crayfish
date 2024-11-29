@@ -1,0 +1,25 @@
+[package]
+name = "transfer_sol"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+crayfish-accounts.workspace = true
+crayfish-context.workspace = true
+crayfish-context-macro.workspace = true
+crayfish-handler-macro.workspace = true
+crayfish-program.workspace = true
+crayfish-traits.workspace = true
+crayfish-program-id-macro.workspace = true
+solana-nostd-entrypoint.workspace = true
+solana-program.workspace = true
+
+[dev-dependencies]
+aligned.workspace = true
+bytemuck.workspace = true
+litesvm.workspace = true
+solana-sdk.workspace = true

@@ -1,12 +1,12 @@
 use {
     crate::HandlerContext,
+    aligned::{Aligned, A8},
     bytemuck::Pod,
-    crayfish_program::{program_error::ProgramError, RawAccountInfo},
-    std::{mem::size_of, ops::Deref},
+    crayfish_program::{bytes::try_from_bytes, program_error::ProgramError, RawAccountInfo},
+    std::ops::Deref,
 };
 
-#[repr(C, align(8))]
-pub struct Args<'a, T>(&'a T); //Constraint trait Aligned
+pub struct Args<'a, T>(&'a T);
 
 impl<'a, T> Args<'a, T> {
     pub fn new(arg: &'a T) -> Self {
@@ -30,12 +30,12 @@ where
         _accounts: &mut &'a [RawAccountInfo],
         instruction_data: &mut &'a [u8],
     ) -> Result<Self, ProgramError> {
-        let arg: &T = bytemuck::try_from_bytes(instruction_data)
-            .map_err(|_err| ProgramError::AccountBorrowFailed)?; //TODO
+        let arg: &T =
+            try_from_bytes(instruction_data).ok_or(ProgramError::InvalidInstructionData)?;
 
-        let (_, remaining) = instruction_data.split_at(size_of::<T>());
+        let (_, remaining) = instruction_data.split_at(std::mem::size_of::<Aligned<A8, T>>());
         *instruction_data = remaining;
 
-        Ok(Args(arg))
+        Ok(Args::new(arg))
     }
 }

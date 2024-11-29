@@ -5,10 +5,13 @@ use {
 
 pub trait Lamports: WritableAccount + SignerAccount {
     fn send(&self, to: &impl WritableAccount, amount: u64) -> Result<(), ProgramError> {
-        self.mut_lamports()?
+        let mut payer_lamports = self.mut_lamports()?;
+        let mut recipient_lamports = to.mut_lamports()?;
+
+        *payer_lamports = payer_lamports
             .checked_sub(amount)
             .ok_or(ProgramError::ArithmeticOverflow)?;
-        to.mut_lamports()?
+        *recipient_lamports = recipient_lamports
             .checked_add(amount)
             .ok_or(ProgramError::ArithmeticOverflow)?;
 
@@ -16,13 +19,15 @@ pub trait Lamports: WritableAccount + SignerAccount {
     }
 
     fn send_all(&self, to: &impl WritableAccount) -> Result<(), ProgramError> {
-        let lamports = *self.lamports()?;
+        let amount = *self.lamports()?;
+        let mut payer_lamports = self.mut_lamports()?;
+        let mut recipient_lamports = to.mut_lamports()?;
 
-        self.mut_lamports()?
-            .checked_sub(lamports)
+        *payer_lamports = payer_lamports
+            .checked_sub(amount)
             .ok_or(ProgramError::ArithmeticOverflow)?;
-        to.mut_lamports()?
-            .checked_add(lamports)
+        *recipient_lamports = recipient_lamports
+            .checked_add(amount)
             .ok_or(ProgramError::ArithmeticOverflow)?;
 
         Ok(())

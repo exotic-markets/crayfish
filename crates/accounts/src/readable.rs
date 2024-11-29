@@ -1,4 +1,9 @@
-use {crate::Owner, bytemuck::Pod};
+use {
+    crate::Owner,
+    aligned::{Aligned, A8},
+    bytemuck::Pod,
+    crayfish_program::bytes::{try_from_bytes, try_from_bytes_mut},
+};
 
 pub trait Readable {
     fn read(data: &[u8]) -> Option<&Self>;
@@ -20,11 +25,10 @@ where
     T: Owner + Pod,
 {
     fn read(data: &[u8]) -> Option<&Self> {
-        bytemuck::try_from_bytes(&data[..std::mem::size_of::<Self>()]).ok() //TODO replace when we have alignement trait
+        try_from_bytes(&data[..std::mem::size_of::<Aligned<A8, Self>>()])
     }
 
-    //TODO replace when we have alignement trait
     fn read_mut(data: &mut [u8]) -> Option<&mut Self> {
-        bytemuck::try_from_bytes_mut(&mut data[..std::mem::size_of::<Self>()]).ok()
+        try_from_bytes_mut(&mut data[..std::mem::size_of::<Aligned<A8, Self>>()])
     }
 }

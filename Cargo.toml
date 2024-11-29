@@ -11,6 +11,7 @@ authors = ["Jean Marchand"]
 repository = "https://github.com/rust-lang/rust-analyzer"
 
 [workspace.dependencies]
+aligned = "0.4.2"
 anchor-lang-idl-spec = "0.1.0"
 bytemuck = "1.19"
 cargo-manifest = "0.16"

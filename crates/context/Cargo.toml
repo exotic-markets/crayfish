@@ -8,6 +8,7 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
+aligned.workspace = true
 bytemuck.workspace = true
 crayfish-program.workspace = true
 paste.workspace = true

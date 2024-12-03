@@ -8,4 +8,12 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
+anchor-lang-idl-spec.workspace = true
 crayfish-metadata-extractor.workspace = true
+cargo-manifest.workspace = true
+syn = { workspace = true, features = [
+    "full",
+    "visit",
+    "extra-traits",
+] } #TODO remove extra-traits
+serde_json = "1.0"

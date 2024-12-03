@@ -23,6 +23,7 @@ pub fn account(_attr: TokenStream, item: TokenStream) -> TokenStream {
         #[repr(C, align(8))]
         #item
 
+        #[automatically_derived]
         impl crayfish_accounts::Owner for #name #ty_generics #where_clause {
             const OWNER: crayfish_program::pubkey::Pubkey = crate::ID;
         }

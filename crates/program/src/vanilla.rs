@@ -15,6 +15,7 @@ pub type RawAccountInfo = solana_nostd_entrypoint::NoStdAccountInfo;
 pub type Account = solana_nostd_entrypoint::AccountInfoC;
 pub type Instruction = solana_nostd_entrypoint::InstructionC;
 pub type Signer<'a, 'b> = &'a [&'b [u8]];
+pub type AccountMeta = solana_nostd_entrypoint::AccountMetaC;
 
 #[macro_export]
 macro_rules! program_entrypoint {
@@ -25,4 +26,17 @@ macro_rules! program_entrypoint {
         $crate::noalloc_allocator!();
         $crate::basic_panic_impl!();
     };
+}
+
+impl crate::ToMeta for RawAccountInfo {
+    fn to_meta(&self, is_writable: bool, is_signer: bool) -> AccountMeta {
+        let mut meta = if is_signer {
+            self.to_meta_c_signer()
+        } else {
+            self.to_meta_c()
+        };
+
+        meta.is_writable = is_writable;
+        meta
+    }
 }

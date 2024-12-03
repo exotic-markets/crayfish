@@ -103,32 +103,30 @@ impl<'a> ToTokens for Assign<'a> {
                         };
                     }
                 }
-            } else {
-                if let Some(punctuated_seeds) = c.get_seeds() {
-                    let seeds_array = {
-                        let array = ExprArray {
-                            attrs: Vec::new(),
-                            bracket_token: syn::token::Bracket::default(),
-                            elems: punctuated_seeds.clone(),
-                        };
-
-                        Expr::Array(array)
+            } else if let Some(punctuated_seeds) = c.get_seeds() {
+                let seeds_array = {
+                    let array = ExprArray {
+                        attrs: Vec::new(),
+                        bracket_token: syn::token::Bracket::default(),
+                        elems: punctuated_seeds.clone(),
                     };
 
-                    quote! {
-                        // TODO: Handle values coming from ix data and other accounts
-                        let seeds: &[&[u8]] = &#seeds_array;
-                        let (pk, bump) = crayfish_program::try_find_program_address(seeds, &crate::ID).ok_or(ProgramError::InvalidSeeds)?;
-                        if #name.key() != &pk {
-                            return Err(ProgramError::InvalidSeeds);
-                        }
+                    Expr::Array(array)
+                };
 
-                        let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                quote! {
+                    // TODO: Handle values coming from ix data and other accounts
+                    let seeds: &[&[u8]] = &#seeds_array;
+                    let (pk, bump) = crayfish_program::try_find_program_address(seeds, &crate::ID).ok_or(ProgramError::InvalidSeeds)?;
+                    if #name.key() != &pk {
+                        return Err(ProgramError::InvalidSeeds);
                     }
-                } else {
-                    quote! {
-                        let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
-                    }
+
+                    let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                }
+            } else {
+                quote! {
+                    let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
                 }
             }
         });

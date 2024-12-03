@@ -1,5 +1,5 @@
 use {
-    crayfish_metadata_extractor::parsing::ParsingContext,
+    crayfish_metadata_extractor::{parsing::ParsingContext, program::Program},
     std::{
         path::Path,
         process::{Command, Stdio},
@@ -26,7 +26,7 @@ pub fn main() {
     } else {
         // println!("unique one");
 
-        let command = Command::new("cargo") //TODO do it without expand
+        let command = Command::new("cargo") //TODO do it without expand `cargo +nightly rustc --profile=check -- -Zunpretty=expanded`
             .arg("expand")
             .arg("--lib")
             .arg(&format!("--package={}", manifest.package.unwrap().name))
@@ -36,16 +36,10 @@ pub fn main() {
             .stdout;
         let content = String::from_utf8(command).unwrap();
         let file = syn::parse_file(&content).unwrap();
-
-        file.items.iter().for_each(|item| {
-            if let syn::Item::Struct(item_struct) = item {
-                println!("{item_struct:#?}")
-            }
-        });
-
         let context = ParsingContext::from(&file);
+        let program = Program::try_from(context).unwrap();
 
-        println!("{context:?}");
+        println!("{program:?}");
 
         // let context_idents: Vec<&Ident> = file
         //     .items

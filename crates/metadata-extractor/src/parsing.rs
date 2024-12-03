@@ -1,33 +1,44 @@
 use syn::{Expr, File, Ident, Item, ItemFn, Stmt, Type};
 
-#[derive(Default, Debug)]
+// rename indexer
+#[derive(Debug)]
 pub struct ParsingContext<'a> {
     pub contexts: Vec<&'a Ident>,
     pub instructions: Vec<&'a Ident>,
     pub accounts: Vec<&'a Ident>,
+    pub file: &'a File,
 }
-
 impl<'a> From<&'a File> for ParsingContext<'a> {
     fn from(value: &'a File) -> Self {
-        let mut context = ParsingContext::default();
-        value.items.iter().for_each(|item| match item {
-            Item::Impl(item_impl) => {
-                if let Some(ident) = extract_ident(item_impl, "HandlerContext") {
-                    context.contexts.push(ident);
-                }
+        let estimated_size = value.items.len() / 2;
+        let mut contexts = Vec::with_capacity(estimated_size);
+        let mut accounts = Vec::with_capacity(estimated_size);
+        let mut instructions = Vec::with_capacity(estimated_size);
 
-                if let Some(ident) = extract_ident(item_impl, "Owner") {
-                    context.accounts.push(ident);
+        for item in value.items.iter() {
+            match item {
+                Item::Impl(item_impl) => {
+                    if let Some(ident) = extract_ident(item_impl, "HandlerContext") {
+                        contexts.push(ident);
+                    } else if let Some(ident) = extract_ident(item_impl, "Owner") {
+                        accounts.push(ident);
+                    }
                 }
-            }
-            Item::Fn(item_fn) => {
-                if let Some(instructions) = extract_instruction_idents(item_fn) {
-                    context.instructions = instructions;
+                Item::Fn(item_fn) => {
+                    if let Some(mut ins) = extract_instruction_idents(item_fn) {
+                        instructions.append(&mut ins);
+                    }
                 }
+                _ => (),
             }
-            _ => (),
-        });
-        context
+        }
+
+        ParsingContext {
+            accounts,
+            contexts,
+            instructions,
+            file: value,
+        }
     }
 }
 

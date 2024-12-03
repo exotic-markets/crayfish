@@ -7,8 +7,13 @@ license.workspace = true
 authors.workspace = true
 repository.workspace = true
 
+[features]
+default = ["anchor"]
+anchor = ["anchor-lang"]
+
 [dependencies]
 aligned.workspace = true
+anchor-lang = { workspace = true, optional = true }
 bytemuck.workspace = true
 crayfish-errors.workspace = true
 crayfish-program.workspace = true

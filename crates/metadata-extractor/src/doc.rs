@@ -1,15 +1,28 @@
-use syn::{visit::Visit, Lit};
+use syn::{Attribute, Expr, ExprLit, Lit};
 
 #[derive(Default, Debug)]
 pub struct Docs(Vec<String>);
 
-impl<'ast> Visit<'ast> for Docs {
-    fn visit_attribute(&mut self, i: &'ast syn::Attribute) {
-        if i.path().is_ident("doc") {
-            if let Ok(Lit::Str(content)) = i.parse_args::<Lit>() {
-                self.0.push(content.value());
-            }
-        }
+impl From<&[Attribute]> for Docs {
+    fn from(value: &[Attribute]) -> Self {
+        let docs = value
+            .iter()
+            .filter(|attr| attr.path().is_ident("doc"))
+            .filter_map(|attr| {
+                if let syn::Meta::NameValue(v) = &attr.meta {
+                    if let Expr::Lit(ExprLit {
+                        lit: Lit::Str(str_lit),
+                        ..
+                    }) = &v.value
+                    {
+                        return Some(str_lit.value().trim().to_string());
+                    }
+                }
+                None
+            })
+            .collect();
+
+        Docs(docs)
     }
 }
 

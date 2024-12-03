@@ -1,11 +1,14 @@
+use seeds::ConstraintSeeds;
 use syn::{
     parse::{Parse, ParseStream},
+    punctuated::Punctuated,
     visit_mut::VisitMut,
     Expr, Ident, Token,
 };
 
 mod init;
 mod payer;
+mod seeds;
 mod space;
 
 use {init::*, payer::*, space::*};
@@ -15,6 +18,7 @@ pub enum Constraint {
     Init(ConstraintInit),
     Payer(ConstraintPayer),
     Space(ConstraintSpace),
+    Seeds(ConstraintSeeds),
 }
 
 #[derive(Default)]
@@ -62,6 +66,16 @@ impl Constraints {
             }
         })
     }
+
+    pub fn get_seeds(&self) -> Option<&Punctuated<Expr, Token![,]>> {
+        self.0.iter().find_map(|c| {
+            if let Constraint::Seeds(ConstraintSeeds { seeds }) = c {
+                Some(seeds)
+            } else {
+                None
+            }
+        })
+    }
 }
 
 pub fn parse_constraints(input: ParseStream) -> syn::Result<Vec<Constraint>> {
@@ -78,6 +92,9 @@ pub fn parse_constraints(input: ParseStream) -> syn::Result<Vec<Constraint>> {
             }
             i if i == "space" => {
                 constraints.push(Constraint::Space(ConstraintSpace::parse(input)?));
+            }
+            i if i == "seeds" => {
+                constraints.push(Constraint::Seeds(ConstraintSeeds::parse(input)?));
             }
             _ => return Err(syn::Error::new(input.span(), "Unknow constraint.")),
         }

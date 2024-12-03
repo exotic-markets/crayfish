@@ -1,9 +1,11 @@
-use seeds::ConstraintSeeds;
-use syn::{
-    parse::{Parse, ParseStream},
-    punctuated::Punctuated,
-    visit_mut::VisitMut,
-    Expr, Ident, Token,
+use {
+    seeds::ConstraintSeeds,
+    syn::{
+        parse::{Parse, ParseStream},
+        punctuated::Punctuated,
+        visit_mut::VisitMut,
+        Expr, Ident, Token,
+    },
 };
 
 mod init;

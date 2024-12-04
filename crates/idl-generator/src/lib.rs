@@ -1,7 +1,7 @@
 use {
     anchor_lang_idl_spec::{
         Idl, IdlAccount, IdlDefinedFields, IdlField, IdlMetadata, IdlRepr, IdlReprModifier,
-        IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefTy,
+        IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefTy, IDL_SPEC,
     },
     crayfish_metadata_extractor::{
         account::AccountState,
@@ -29,7 +29,7 @@ impl Convert<Idl> for Program {
             metadata: IdlMetadata {
                 name: "contract".to_string(),
                 version: "0.1.0".to_string(),
-                spec: "0.1.0".to_string(),
+                spec: IDL_SPEC.to_string(),
                 description: None,
                 repository: None,
                 dependencies: vec![],

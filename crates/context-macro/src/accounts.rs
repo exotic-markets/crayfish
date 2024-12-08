@@ -70,7 +70,7 @@ impl<'a> ToTokens for Assign<'a> {
                         Mut::try_from_info(#name)?
                     };
                 }
-            }else {
+            } else {
                 quote! {
                     let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
                 }

@@ -1,15 +1,17 @@
 use {
     accounts::{Account, Accounts},
+    arguments::Arguments,
     lifetime::InjectLifetime,
     proc_macro::TokenStream,
     quote::{quote, ToTokens},
     syn::{
         parse::Parse, parse_macro_input, parse_quote, spanned::Spanned, visit_mut::VisitMut,
-        Generics, Ident, Item, Lifetime,
+        Fields, Generics, Ident, Item, Lifetime,
     },
 };
 
 mod accounts;
+mod arguments;
 mod constraints;
 mod lifetime;
 
@@ -18,6 +20,12 @@ pub fn context(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let context = parse_macro_input!(item as Context);
 
     TokenStream::from(context.into_token_stream())
+}
+
+#[proc_macro_attribute]
+pub fn instruction(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    // The macro is declared here but only used as an attribute of the context
+    item
 }
 
 // struct ContextAttributes {
@@ -35,6 +43,7 @@ struct Context {
     generics: Generics,
     item: Item,
     accounts: Accounts,
+    args: Arguments,
 }
 impl Parse for Context {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
@@ -45,6 +54,16 @@ impl Parse for Context {
 
         match item {
             Item::Struct(mut item_struct) => {
+                let args = item_struct
+                    .attrs
+                    .iter_mut()
+                    .filter(|attr| attr.meta.path().is_ident("instruction"))
+                    .map(Arguments::try_from)
+                    .collect::<Result<Vec<Arguments>, syn::Error>>()?
+                    .first()
+                    .unwrap_or(&Arguments(vec![]))
+                    .to_owned();
+
                 let accounts = item_struct
                     .fields
                     .iter_mut()
@@ -56,6 +75,7 @@ impl Parse for Context {
                     generics: item_struct.generics.to_owned(),
                     item: Item::Struct(item_struct),
                     accounts: Accounts(accounts),
+                    args,
                 })
             }
             Item::Enum(_item_enum) => todo!(), // TODO multiple context condition
@@ -69,16 +89,32 @@ impl Parse for Context {
 
 impl ToTokens for Context {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let base_item = &self.item;
+        let account_struct = &mut self.item.to_owned();
         let name = &self.ident;
         let generics = &self.generics;
 
         let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
         let new_lifetime: Lifetime = parse_quote!('info);
-        let (name_list, assign) = self.accounts.split_for_impl();
+        let (name_list, accounts_assign) = self.accounts.split_for_impl();
+        let (args_struct_name, args_struct, args_assign) = self.args.generate_struct(name);
+
+        // Add an `args` field to the context
+        match account_struct {
+            Item::Struct(account_struct) => match &mut account_struct.fields {
+                Fields::Named(fields) => {
+                    fields.named.push(parse_quote! {
+                        pub args: crayfish_context::args::Args<#new_lifetime, #args_struct_name>
+                    });
+                }
+                _ => (),
+            },
+            _ => panic!("Item is supposed to be a struct"),
+        }
 
         let expanded = quote! {
-            #base_item
+            #args_struct
+
+            #account_struct
 
             impl #impl_generics crayfish_context::HandlerContext<#new_lifetime> for #name #ty_generics #where_clause {
                 fn from_entrypoint(
@@ -89,11 +125,12 @@ impl ToTokens for Context {
                         return Err(ProgramError::NotEnoughAccountKeys);
                     };
 
-                    #assign
+                    #args_assign
+                    #accounts_assign
 
                     *accounts = rem;
 
-                    Ok(#name { #name_list })
+                    Ok(#name { #name_list, args })
                 }
             }
         };

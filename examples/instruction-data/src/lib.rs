@@ -2,7 +2,7 @@ use {
     bytemuck::{Pod, Zeroable},
     crayfish_account_macro::account,
     crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount},
-    crayfish_context_macro::context,
+    crayfish_context_macro::{context, instruction},
     crayfish_handler_macro::handlers,
     crayfish_program::program_error::ProgramError,
     crayfish_program_id_macro::program_id,
@@ -16,37 +16,38 @@ pub struct InitContext {
     #[constraint(
         init,
         payer = payer,
-        space = Counter::SPACE
+        space = Buffer::SPACE
     )]
-    pub counter: Mut<Account<Counter>>,
+    pub buffer: Mut<Account<Buffer>>,
     pub system: Program<System>,
 }
 
 #[context]
-pub struct IncrementContext {
-    pub counter: Mut<Account<Counter>>,
+#[instruction(value: u64, other_value: u64,)]
+pub struct SetValueContext {
+    pub buffer: Mut<Account<Buffer>>,
 }
 
 handlers! {
     initialize,
-    increment
+    set_value
 }
 
 pub fn initialize(_: InitContext) -> Result<(), ProgramError> {
     Ok(())
 }
 
-pub fn increment(ctx: IncrementContext) -> Result<(), ProgramError> {
-    ctx.counter.mut_data()?.count += 1;
+pub fn set_value(ctx: SetValueContext) -> Result<(), ProgramError> {
+    ctx.buffer.mut_data()?.value = ctx.args.value;
 
     Ok(())
 }
 
 #[account]
-pub struct Counter {
-    pub count: u64,
+pub struct Buffer {
+    pub value: u64,
 }
 
-impl Counter {
-    const SPACE: usize = std::mem::size_of::<Counter>();
+impl Buffer {
+    const SPACE: usize = std::mem::size_of::<Buffer>();
 }

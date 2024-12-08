@@ -60,7 +60,7 @@ fn integration_test() {
     let ix = Instruction {
         program_id,
         accounts: vec![AccountMeta::new(buffer_pk, false)],
-        data: vec![1]
+        data: [1]
             .iter()
             .chain(bytemuck::bytes_of(&ix_args).iter())
             .cloned()

@@ -100,14 +100,13 @@ impl ToTokens for Context {
 
         // Add an `args` field to the context
         match account_struct {
-            Item::Struct(account_struct) => match &mut account_struct.fields {
-                Fields::Named(fields) => {
+            Item::Struct(account_struct) => {
+                if let Fields::Named(fields) = &mut account_struct.fields {
                     fields.named.push(parse_quote! {
                         pub args: crayfish_context::args::Args<#new_lifetime, #args_struct_name>
                     });
                 }
-                _ => (),
-            },
+            }
             _ => panic!("Item is supposed to be a struct"),
         }
 

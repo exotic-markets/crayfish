@@ -37,7 +37,7 @@ where
     }
 }
 
-impl<'a, T> AsRef<RawAccountInfo> for Program<'a, T>
+impl<T> AsRef<RawAccountInfo> for Program<'_, T>
 where
     T: ProgramId,
 {
@@ -46,7 +46,7 @@ where
     }
 }
 
-impl<'a, T> ReadableAccount for Program<'a, T>
+impl<T> ReadableAccount for Program<'_, T>
 where
     T: ProgramId,
 {

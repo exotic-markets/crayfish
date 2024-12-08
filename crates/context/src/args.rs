@@ -14,7 +14,7 @@ impl<'a, T> Args<'a, T> {
     }
 }
 
-impl<'a, T> Deref for Args<'a, T> {
+impl<T> Deref for Args<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {

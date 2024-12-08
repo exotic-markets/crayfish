@@ -18,15 +18,15 @@ impl<'a> FromAccountInfo<'a> for Signer<'a> {
     }
 }
 
-impl<'a> AsRef<RawAccountInfo> for Signer<'a> {
+impl AsRef<RawAccountInfo> for Signer<'_> {
     fn as_ref(&self) -> &RawAccountInfo {
         self.info
     }
 }
 
-impl<'a> SignerAccount for Signer<'a> {}
+impl SignerAccount for Signer<'_> {}
 
-impl<'a> ReadableAccount for Signer<'a> {
+impl ReadableAccount for Signer<'_> {
     type DataType = [u8];
 
     fn key(&self) -> &Pubkey {

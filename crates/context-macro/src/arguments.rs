@@ -36,7 +36,7 @@ impl Parse for Argument {
 
 pub struct Assign<'a>(Vec<(&'a Ident, &'a PathSegment)>);
 
-impl<'a> ToTokens for Assign<'a> {
+impl ToTokens for Assign<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let assign_fields = self.0.iter().map(|(name, ty)| {
             quote! {

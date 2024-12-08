@@ -39,7 +39,7 @@ impl TryFrom<&mut Field> for Account {
 
 pub struct NameList<'a>(Vec<&'a Ident>);
 
-impl<'a> ToTokens for NameList<'a> {
+impl ToTokens for NameList<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let names = &self.0;
         let expanded = quote! {
@@ -52,7 +52,7 @@ impl<'a> ToTokens for NameList<'a> {
 
 pub struct Assign<'a>(Vec<(&'a Ident, &'a PathSegment, &'a Constraints)>);
 
-impl<'a> ToTokens for Assign<'a> {
+impl ToTokens for Assign<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let assign_fields = self.0.iter().map(|(name, ty, c)| {
             if c.has_init() {

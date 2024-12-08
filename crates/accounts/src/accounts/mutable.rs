@@ -71,4 +71,4 @@ where
     }
 }
 
-impl<'a> SignerAccount for Mut<Signer<'a>> {}
+impl SignerAccount for Mut<Signer<'_>> {}

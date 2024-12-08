@@ -103,6 +103,6 @@ impl TryFrom<&mut Attribute> for Arguments {
 
     fn try_from(value: &mut Attribute) -> Result<Self, Self::Error> {
         let tokens = value.meta.require_list()?.tokens.clone();
-        Ok(parse2::<Arguments>(tokens)?)
+        parse2::<Arguments>(tokens)
     }
 }

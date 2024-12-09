@@ -13,13 +13,13 @@ impl<'a> FromAccountInfo<'a> for UncheckedAccount<'a> {
     }
 }
 
-impl<'a> AsRef<RawAccountInfo> for UncheckedAccount<'a> {
+impl AsRef<RawAccountInfo> for UncheckedAccount<'_> {
     fn as_ref(&self) -> &RawAccountInfo {
         self.info
     }
 }
 
-impl<'a> ReadableAccount for UncheckedAccount<'a> {
+impl ReadableAccount for UncheckedAccount<'_> {
     type DataType = [u8];
 
     fn key(&self) -> &Pubkey {

@@ -20,13 +20,13 @@ impl<'a> FromAccountInfo<'a> for SystemAccount<'a> {
     }
 }
 
-impl<'a> AsRef<RawAccountInfo> for SystemAccount<'a> {
+impl AsRef<RawAccountInfo> for SystemAccount<'_> {
     fn as_ref(&self) -> &RawAccountInfo {
         self.info
     }
 }
 
-impl<'a> ReadableAccount for SystemAccount<'a> {
+impl ReadableAccount for SystemAccount<'_> {
     type DataType = [u8];
 
     fn key(&self) -> &Pubkey {

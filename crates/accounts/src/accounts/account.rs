@@ -30,7 +30,7 @@ where
     }
 }
 
-impl<'a, T> AsRef<RawAccountInfo> for Account<'a, T>
+impl<T> AsRef<RawAccountInfo> for Account<'_, T>
 where
     T: Owner + Pod,
 {
@@ -39,7 +39,7 @@ where
     }
 }
 
-impl<'a, T> ReadableAccount for Account<'a, T>
+impl<T> ReadableAccount for Account<'_, T>
 where
     T: Owner + Pod,
 {

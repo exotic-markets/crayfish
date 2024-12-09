@@ -1,4 +1,5 @@
 use {
+    bytemuck::{Pod, Zeroable},
     crayfish_accounts::{Mut, Program, Signer, System, SystemAccount},
     crayfish_context::args::Args,
     crayfish_context_macro::context,
@@ -28,19 +29,19 @@ pub struct SystemContext {
 
 pub fn transfer_sol_with_cpi(
     amount: Args<u64>,
-    TransferContext { payer, recipient }: TransferContext,
+    ctx: TransferContext,
     _: SystemContext,
 ) -> Result<(), ProgramError> {
-    payer.transfer(&recipient, *amount)?;
+    ctx.payer.transfer(&ctx.recipient, *amount)?;
 
     Ok(())
 }
 
 pub fn transfer_sol_with_program(
     amount: Args<u64>,
-    TransferContext { payer, recipient }: TransferContext,
+    ctx: TransferContext,
 ) -> Result<(), ProgramError> {
-    payer.send(&recipient, *amount)?;
+    ctx.payer.send(&ctx.recipient, *amount)?;
 
     Ok(())
 }

@@ -1,4 +1,5 @@
 use {
+    bytemuck::{Pod, Zeroable},
     crayfish_account_macro::account,
     crayfish_accounts::{Account, FromAccountInfo, Mut, Program, Signer, System, WritableAccount},
     crayfish_context_macro::context,
@@ -35,8 +36,8 @@ pub fn initialize(_: InitContext) -> Result<(), ProgramError> {
     Ok(())
 }
 
-pub fn increment(IncrementContext { counter }: IncrementContext) -> Result<(), ProgramError> {
-    counter.mut_data()?.count += 1;
+pub fn increment(ctx: IncrementContext) -> Result<(), ProgramError> {
+    ctx.counter.mut_data()?.count += 1;
 
     Ok(())
 }

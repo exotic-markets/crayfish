@@ -50,7 +50,7 @@ pub struct IncrementContext {
 
 pub fn initialize(ctx: InitContext) -> Result<(), ProgramError> {
     *ctx.counter.mut_data()? = Counter {
-        bump: ctx.args.bump as u64,
+        bump: ctx.args.bump,
         admin: ctx.args.admin,
         count: 0,
     };

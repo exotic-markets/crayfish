@@ -33,44 +33,124 @@ fn integration_test() {
 
     svm.add_program(program_id, &program_bytes);
 
-    let buffer_kp = Keypair::new();
-    let buffer_pk = buffer_kp.pubkey();
-    let ix = Instruction {
-        program_id,
-        accounts: vec![
-            AccountMeta::new_readonly(admin_pk, true),
-            AccountMeta::new(buffer_pk, true),
-            AccountMeta::new_readonly(system_program::ID, false),
-        ],
-        data: vec![0],
-    };
-    let hash = svm.latest_blockhash();
-    let tx =
-        Transaction::new_signed_with_payer(&[ix], Some(&admin_pk), &[&admin_kp, &buffer_kp], hash);
+    let buffer_a_kp = Keypair::new();
+    let buffer_a_pk = buffer_a_kp.pubkey();
+    let buffer_b_kp = Keypair::new();
+    let buffer_b_pk = buffer_b_kp.pubkey();
+
+    let tx = Transaction::new_signed_with_payer(
+        &[Instruction {
+            program_id,
+            accounts: vec![
+                AccountMeta::new_readonly(admin_pk, true),
+                AccountMeta::new(buffer_a_pk, true),
+                AccountMeta::new_readonly(system_program::ID, false),
+            ],
+            data: vec![0],
+        }],
+        Some(&admin_pk),
+        &[&admin_kp, &buffer_a_kp],
+        svm.latest_blockhash(),
+    );
     svm.send_transaction(tx).unwrap();
 
-    let raw_account = svm.get_account(&buffer_pk).unwrap();
-    let buffer_account: &Buffer = bytemuck::try_from_bytes(raw_account.data.as_slice()).unwrap();
-    assert!(buffer_account.value == 0);
+    let tx = Transaction::new_signed_with_payer(
+        &[Instruction {
+            program_id,
+            accounts: vec![
+                AccountMeta::new_readonly(admin_pk, true),
+                AccountMeta::new(buffer_b_pk, true),
+                AccountMeta::new_readonly(system_program::ID, false),
+            ],
+            data: vec![0],
+        }],
+        Some(&admin_pk),
+        &[&admin_kp, &buffer_b_kp],
+        svm.latest_blockhash(),
+    );
+    svm.send_transaction(tx).unwrap();
 
-    let ix_args = SetValueContextArgs {
+    let ix_a_args = SetValueContextArgs {
         value: 10,
         other_value: 5,
     };
-    let ix = Instruction {
-        program_id,
-        accounts: vec![AccountMeta::new(buffer_pk, false)],
-        data: [1]
-            .iter()
-            .chain(bytemuck::bytes_of(&ix_args).iter())
-            .cloned()
-            .collect(),
-    };
-    let hash = svm.latest_blockhash();
-    let tx = Transaction::new_signed_with_payer(&[ix], Some(&admin_pk), &[&admin_kp], hash);
-    svm.send_transaction(tx).unwrap();
+    let more_args = 42_u64;
+    let tx = Transaction::new_signed_with_payer(
+        &[Instruction {
+            program_id,
+            accounts: vec![AccountMeta::new(buffer_a_pk, false)],
+            data: [1]
+                .iter()
+                .chain(bytemuck::bytes_of(&ix_a_args).iter())
+                .chain(bytemuck::bytes_of(&more_args).iter())
+                .cloned()
+                .collect(),
+        }],
+        Some(&admin_pk),
+        &[&admin_kp],
+        svm.latest_blockhash(),
+    );
+    let res = svm.send_transaction(tx).unwrap();
+    let raw_account = svm.get_account(&buffer_a_pk).unwrap();
+    let buffer_account = bytemuck::try_from_bytes::<Buffer>(raw_account.data.as_slice()).unwrap();
+    assert_eq!(res.logs[1], format!("Program log: {}", more_args));
+    assert!(buffer_account.value == ix_a_args.value);
 
-    let raw_account = svm.get_account(&buffer_pk).unwrap();
-    let buffer_account: &Buffer = bytemuck::try_from_bytes(raw_account.data.as_slice()).unwrap();
-    assert!(buffer_account.value == ix_args.value);
+    let ix_b_args = SetValueContextArgs {
+        value: 50,
+        other_value: 55,
+    };
+    let more_args = 69_u64;
+    let tx = Transaction::new_signed_with_payer(
+        &[Instruction {
+            program_id,
+            accounts: vec![AccountMeta::new(buffer_b_pk, false)],
+            data: [1]
+                .iter()
+                .chain(bytemuck::bytes_of(&ix_b_args).iter())
+                .chain(bytemuck::bytes_of(&more_args).iter())
+                .cloned()
+                .collect(),
+        }],
+        Some(&admin_pk),
+        &[&admin_kp],
+        svm.latest_blockhash(),
+    );
+    let res = svm.send_transaction(tx).unwrap();
+    let raw_account = svm.get_account(&buffer_b_pk).unwrap();
+    let buffer_account = bytemuck::try_from_bytes::<Buffer>(raw_account.data.as_slice()).unwrap();
+    assert_eq!(res.logs[1], format!("Program log: {}", more_args));
+    assert!(buffer_account.value == ix_b_args.value);
+
+    let ix_a_args = SetValueContextArgs {
+        value: 6,
+        other_value: 11,
+    };
+    let ix_b_args = SetValueContextArgs {
+        value: 50,
+        other_value: 55,
+    };
+    let tx = Transaction::new_signed_with_payer(
+        &[Instruction {
+            program_id,
+            accounts: vec![
+                AccountMeta::new(buffer_a_pk, false),
+                AccountMeta::new(buffer_b_pk, false),
+            ],
+            data: [2]
+                .iter()
+                .chain(bytemuck::bytes_of(&ix_a_args).iter())
+                .chain(bytemuck::bytes_of(&ix_b_args).iter())
+                .cloned()
+                .collect(),
+        }],
+        Some(&admin_pk),
+        &[&admin_kp],
+        svm.latest_blockhash(),
+    );
+    let res = svm.send_transaction(tx).unwrap();
+    assert_eq!(
+        res.logs[1],
+        format!("Program log: {}", ix_a_args.value + ix_b_args.value)
+    );
 }

@@ -1,6 +1,6 @@
 use {
     proc_macro2::TokenStream,
-    quote::{format_ident, quote, ToTokens},
+    quote::{format_ident, quote},
     syn::{
         parse::{Parse, ParseStream},
         parse2,
@@ -10,68 +10,77 @@ use {
 };
 
 #[derive(Clone, Debug)]
-pub struct Argument {
-    name: Ident,
-    ty: PathSegment,
+pub enum Argument {
+    Value {
+        name: Ident,
+        ty: Option<PathSegment>,
+    },
+    Struct {
+        name: Ident,
+    },
 }
 
 impl Parse for Argument {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let name: Ident = input.parse()?;
-        input.parse::<Token![:]>()?;
-        let ty: Path = input.parse()?;
-        let path_segment = ty
-            .segments
-            .first()
-            .ok_or_else(|| {
-                syn::Error::new(ty.span(), "Expected at least one path segment for type")
-            })?
-            .clone();
-        Ok(Argument {
-            name,
-            ty: path_segment,
-        })
-    }
-}
 
-pub struct Assign<'a>(Vec<(&'a Ident, &'a PathSegment)>);
-
-impl ToTokens for Assign<'_> {
-    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let assign_fields = self.0.iter().map(|(name, ty)| {
-            quote! {
-                let #name = <#ty as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
-            }
-        });
-
-        let expanded = quote! {
-            #(#assign_fields)*
-        };
-
-        expanded.to_tokens(tokens);
+        if input.is_empty() {
+            Ok(Argument::Struct { name })
+        } else {
+            input.parse::<Token![:]>()?;
+            let ty: Path = input.parse()?;
+            let path_segment = ty
+                .segments
+                .first()
+                .ok_or_else(|| {
+                    syn::Error::new(ty.span(), "Expected at least one path segment for the type")
+                })?
+                .clone();
+            Ok(Argument::Value {
+                name,
+                ty: Some(path_segment),
+            })
+        }
     }
 }
 
 #[derive(Clone, Debug)]
-pub struct Arguments(pub Vec<Argument>);
+pub enum Arguments {
+    Values(Vec<Argument>),
+    Struct(Argument),
+}
 
 impl Arguments {
-    pub fn generate_struct(&self, name: &Ident) -> (Ident, TokenStream, TokenStream) {
-        let struct_name = format_ident!("{}Args", name);
+    pub fn split_for_impl(&self, base_name: &Ident) -> (TokenStream, TokenStream, TokenStream) {
+        let (struct_name, generated_struct) = match self {
+            Arguments::Struct(Argument::Struct { name }) => (quote! {#name}, quote!()),
+            Arguments::Values(list) => {
+                let struct_name = format_ident!("{}Args", base_name);
 
-        let fields = self.0.iter().map(|arg| {
-            let name = &arg.name;
-            let ty = &arg.ty.ident;
-            quote! {
-                pub #name: #ty,
+                let fields = list.iter().map(|arg| {
+                    if let Argument::Value { name, ty } = arg {
+                        let name = &name;
+                        let ty = &ty.clone().unwrap().ident;
+                        quote! {
+                            pub #name: #ty,
+                        }
+                    } else {
+                        quote!()
+                    }
+                });
+
+                let generated_struct = quote! {
+                    #[repr(C)]
+                    #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
+                    pub struct #struct_name {
+                        #(#fields)*
+                    }
+                };
+
+                (quote! {#struct_name}, generated_struct)
             }
-        });
-
-        let generated_struct = quote! {
-            #[repr(C)]
-            #[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
-            pub struct #struct_name {
-                #(#fields)*
+            _ => {
+                panic!("Can't determine if args are values or a struct",)
             }
         };
 
@@ -88,13 +97,26 @@ impl Parse for Arguments {
         let mut arguments = Vec::new();
         while !input.is_empty() {
             let arg: Argument = input.parse()?;
+
+            if let Argument::Struct { name } = &arg {
+                if !input.is_empty() || !arguments.is_empty() {
+                    return Err(syn::Error::new(
+                        name.span(),
+                        "User defined struct in argument should be used alone",
+                    ));
+                }
+
+                return Ok(Arguments::Struct(arg));
+            }
+
             arguments.push(arg);
 
             if input.peek(Token![,]) {
                 input.parse::<Token![,]>()?;
             }
         }
-        Ok(Arguments(arguments))
+
+        Ok(Arguments::Values(arguments))
     }
 }
 

@@ -1,5 +1,5 @@
 use {
-    instruction_data::{Buffer, SetValueContextArgs},
+    instruction_data::{Buffer, InitArgs, SetValueContextArgs},
     litesvm::LiteSVM,
     solana_sdk::{
         instruction::{AccountMeta, Instruction},
@@ -38,6 +38,8 @@ fn integration_test() {
     let buffer_b_kp = Keypair::new();
     let buffer_b_pk = buffer_b_kp.pubkey();
 
+    let init_args = InitArgs { value: 42 };
+
     let tx = Transaction::new_signed_with_payer(
         &[Instruction {
             program_id,
@@ -46,13 +48,18 @@ fn integration_test() {
                 AccountMeta::new(buffer_a_pk, true),
                 AccountMeta::new_readonly(system_program::ID, false),
             ],
-            data: vec![0],
+            data: [0]
+                .iter()
+                .chain(bytemuck::bytes_of(&init_args).iter())
+                .cloned()
+                .collect(),
         }],
         Some(&admin_pk),
         &[&admin_kp, &buffer_a_kp],
         svm.latest_blockhash(),
     );
-    svm.send_transaction(tx).unwrap();
+    let res = svm.send_transaction(tx).unwrap();
+    assert_eq!(res.logs[3], format!("Program log: {}", init_args.value));
 
     let tx = Transaction::new_signed_with_payer(
         &[Instruction {
@@ -62,7 +69,11 @@ fn integration_test() {
                 AccountMeta::new(buffer_b_pk, true),
                 AccountMeta::new_readonly(system_program::ID, false),
             ],
-            data: vec![0],
+            data: [0]
+                .iter()
+                .chain(bytemuck::bytes_of(&init_args).iter())
+                .cloned()
+                .collect(),
         }],
         Some(&admin_pk),
         &[&admin_kp, &buffer_b_kp],

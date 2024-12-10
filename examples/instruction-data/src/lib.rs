@@ -5,7 +5,7 @@ use {
         Account, FromAccountInfo, Mut, Program, ReadableAccount, Signer, System, WritableAccount,
     },
     crayfish_context::args::Args,
-    crayfish_context_macro::{context, instruction},
+    crayfish_context_macro::{args, context},
     crayfish_handler_macro::handlers,
     crayfish_program::{msg, program_error::ProgramError},
     crayfish_program_id_macro::program_id,
@@ -13,7 +13,14 @@ use {
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Pod, Zeroable)]
+pub struct InitArgs {
+    pub value: u64,
+}
+
 #[context]
+#[args(InitArgs)]
 pub struct InitContext {
     pub payer: Signer,
     #[constraint(
@@ -26,7 +33,7 @@ pub struct InitContext {
 }
 
 #[context]
-#[instruction(value: u64, other_value: u64,)]
+#[args(value: u64, other_value: u64)]
 pub struct SetValueContext {
     pub buffer: Mut<Account<Buffer>>,
 }
@@ -37,7 +44,9 @@ handlers! {
     set_and_add_values,
 }
 
-pub fn initialize(_: InitContext) -> Result<(), ProgramError> {
+pub fn initialize(ctx: InitContext) -> Result<(), ProgramError> {
+    msg!("{}", ctx.args.value);
+
     Ok(())
 }
 

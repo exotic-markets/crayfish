@@ -23,7 +23,7 @@ pub fn context(_attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-pub fn instruction(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn args(_attr: TokenStream, item: TokenStream) -> TokenStream {
     // The macro is declared here but only used as an attribute of the context
     item
 }
@@ -57,11 +57,11 @@ impl Parse for Context {
                 let args = item_struct
                     .attrs
                     .iter_mut()
-                    .filter(|attr| attr.meta.path().is_ident("instruction"))
+                    .filter(|attr| attr.meta.path().is_ident("args"))
                     .map(Arguments::try_from)
                     .collect::<Result<Vec<Arguments>, syn::Error>>()?
                     .first()
-                    .unwrap_or(&Arguments(vec![]))
+                    .unwrap_or(&Arguments::Values(vec![]))
                     .to_owned();
 
                 let accounts = item_struct
@@ -96,7 +96,7 @@ impl ToTokens for Context {
         let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
         let new_lifetime: Lifetime = parse_quote!('info);
         let (name_list, accounts_assign) = self.accounts.split_for_impl();
-        let (args_struct_name, args_struct, args_assign) = self.args.generate_struct(name);
+        let (args_struct_name, args_struct, args_assign) = self.args.split_for_impl(name);
 
         // Add an `args` field to the context
         match account_struct {

@@ -63,12 +63,25 @@ impl ToTokens for Assign<'_> {
                     return syn::Error::new(name.span(), "Not found payer or space for the init constraint").to_compile_error()
                 };
 
-                quote! {
-                    let #name: #ty = {
-                        let system_acc = <crayfish_accounts::Mut<crayfish_accounts::SystemAccount> as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
-                        crayfish_traits::SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, None)?;
-                        Mut::try_from_info(#name)?
-                    };
+                if let (Some(punctuated_seeds), Some(bump)) = (c.get_seeds(), c.get_bump()) {
+                    quote! {
+                        let #name: #ty = {
+                            let system_acc = <crayfish_accounts::Mut<crayfish_accounts::SystemAccount> as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                            let signer_seeds = [#punctuated_seeds, &[#bump as u8]];
+                            let seeds_vec = &signer_seeds.into_iter().map(|seed| crayfish_program::instruction::Seed::from(seed)).collect::<Vec<crayfish_program::instruction::Seed>>()[..];
+                            let signer: crayfish_program::instruction::Signer = crayfish_program::instruction::Signer::from(&seeds_vec[..]);
+                            crayfish_traits::SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, Some(&[crayfish_program::instruction::Signer::from(signer)]))?;
+                            Mut::try_from_info(#name)?
+                        };
+                    }
+                } else {
+                    quote! {
+                        let #name: #ty = {
+                            let system_acc = <crayfish_accounts::Mut<crayfish_accounts::SystemAccount> as crayfish_accounts::FromAccountInfo>::try_from_info(#name)?;
+                            crayfish_traits::SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, None)?;
+                            Mut::try_from_info(#name)?
+                        };
+                    }
                 }
             } else {
                 quote! {
@@ -85,16 +98,48 @@ impl ToTokens for Assign<'_> {
     }
 }
 
+pub struct Verify<'a>(Vec<(&'a Ident, &'a Constraints)>);
+
+impl ToTokens for Verify<'_> {
+    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+        let verify_fields = self.0.iter().map(|(name, c)| {
+            if (c.get_seeds().is_some() && c.get_bump().is_none()) || (c.get_seeds().is_some() && c.get_bump().is_none()) {
+                return syn::Error::new(name.span(), "`seeds` and `bump` must be used together").to_compile_error();
+            };
+
+            if let (Some(punctuated_seeds), Some(bump)) = (c.get_seeds(), c.get_bump()) {
+                quote! {
+                    let pk = crayfish_program::pubkey::create_program_address(&[#punctuated_seeds, &[#bump as u8]], &crate::ID)?;
+                    if #name.key() != &pk {
+                        return Err(ProgramError::InvalidSeeds);
+                    }
+                }
+            } else {
+                quote!()
+            }
+        });
+
+        let expanded = quote! {
+            #(#verify_fields)*
+        };
+        expanded.to_tokens(tokens);
+    }
+}
+
 pub struct Accounts(pub Vec<Account>);
 
 impl Accounts {
-    pub fn split_for_impl(&self) -> (NameList, Assign) {
-        let (name_list, assign): (Vec<&Ident>, Vec<(&Ident, &PathSegment, &Constraints)>) = self
-            .0
-            .iter()
-            .map(|el| (&el.name, (&el.name, &el.ty, &el.constraints)))
-            .unzip();
+    pub fn split_for_impl(&self) -> (NameList, Assign, Verify) {
+        let iter = self.0.iter();
 
-        (NameList(name_list), Assign(assign))
+        (
+            NameList(iter.clone().map(|el| &el.name).collect()),
+            Assign(
+                iter.clone()
+                    .map(|el| (&el.name, &el.ty, &el.constraints))
+                    .collect(),
+            ),
+            Verify(iter.map(|el| (&el.name, &el.constraints)).collect()),
+        )
     }
 }

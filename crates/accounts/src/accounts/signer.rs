@@ -1,7 +1,7 @@
 use {
     crate::{FromAccountInfo, ReadableAccount, SignerAccount},
-    crayfish_errors::Error,
-    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
+    typhoon_errors::Error,
+    typhoon_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
 };
 
 pub struct Signer<'a> {

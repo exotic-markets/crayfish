@@ -1,5 +1,5 @@
-use crayfish_program::pubkey::Pubkey;
-pub use crayfish_space_macro::Space;
+use typhoon_program::pubkey::Pubkey;
+pub use typhoon_space_macro::Space;
 
 /// Defines the space of an account for initialization.
 pub trait InitSpace {

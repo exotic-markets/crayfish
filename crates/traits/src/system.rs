@@ -1,8 +1,8 @@
 use {
-    crayfish_accounts::{
+    typhoon_accounts::{
         Mut, ReadableAccount, Signer as SignerAccount, SystemAccount, WritableAccount,
     },
-    crayfish_program::{
+    typhoon_program::{
         program_error::ProgramError,
         pubkey::Pubkey,
         system_program::instructions::{Allocate, Assign, CreateAccount, Transfer},

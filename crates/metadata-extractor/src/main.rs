@@ -1,16 +1,16 @@
 use {
-    crayfish_metadata_extractor::parsing::ParsingContext,
     std::{
         path::Path,
         process::{Command, Stdio},
     },
+    typhoon_metadata_extractor::parsing::ParsingContext,
 };
 
 pub fn main() {
     use cargo_manifest::Manifest;
 
     // let manifest_dir = env!("CARGO_MANIFEST_DIR");
-    let manifest_path = Path::new("/home/aursen/crayfish/examples/counter")
+    let manifest_path = Path::new("/home/aursen/typhoon/examples/counter")
         .join("Cargo.toml")
         .canonicalize()
         .unwrap();

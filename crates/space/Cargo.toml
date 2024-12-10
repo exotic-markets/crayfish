@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-space"
+name = "typhoon-space"
 version.workspace = true
 rust-version.workspace = true
 edition.workspace = true
@@ -8,5 +8,5 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-crayfish-program.workspace = true
-crayfish-space-macro.workspace = true
+typhoon-program.workspace = true
+typhoon-space-macro.workspace = true

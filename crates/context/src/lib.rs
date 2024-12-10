@@ -1,6 +1,6 @@
 use {
-    crayfish_program::{program_error::ProgramError, RawAccountInfo},
     paste::paste,
+    typhoon_program::{program_error::ProgramError, RawAccountInfo},
 };
 
 pub mod args;

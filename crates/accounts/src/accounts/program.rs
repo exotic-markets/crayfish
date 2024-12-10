@@ -1,8 +1,8 @@
 use {
     crate::{FromAccountInfo, ProgramId, ReadableAccount},
-    crayfish_errors::Error,
-    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
     std::marker::PhantomData,
+    typhoon_errors::Error,
+    typhoon_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
 };
 
 ///

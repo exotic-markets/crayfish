@@ -1,7 +1,7 @@
 use {
-    crayfish_program::{msg, program_error::ProgramError},
     num_traits::{FromPrimitive, ToPrimitive},
     thiserror::Error,
+    typhoon_program::{msg, program_error::ProgramError},
 };
 
 /// Maybe rework with thiserror 2.0

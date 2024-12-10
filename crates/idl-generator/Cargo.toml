@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-idl-generator"
+name = "typhoon-idl-generator"
 version.workspace = true
 rust-version.workspace = true
 edition.workspace = true
@@ -8,4 +8,4 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-crayfish-metadata-extractor.workspace = true
+typhoon-metadata-extractor.workspace = true

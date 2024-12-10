@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-space-macro"
+name = "typhoon-space-macro"
 version = "0.1.0"
 rust-version.workspace = true
 edition.workspace = true

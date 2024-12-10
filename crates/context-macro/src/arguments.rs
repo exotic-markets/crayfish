@@ -85,7 +85,7 @@ impl Arguments {
         };
 
         let assign = quote! {
-            let args = crayfish_context::args::Args::<#struct_name>::from_entrypoint(accounts, instruction_data)?;
+            let args = typhoon_context::args::Args::<#struct_name>::from_entrypoint(accounts, instruction_data)?;
         };
 
         (struct_name, generated_struct, assign)

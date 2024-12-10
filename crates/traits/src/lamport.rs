@@ -1,6 +1,6 @@
 use {
-    crayfish_accounts::{Mut, Signer, SignerAccount, WritableAccount},
-    crayfish_program::program_error::ProgramError,
+    typhoon_accounts::{Mut, Signer, SignerAccount, WritableAccount},
+    typhoon_program::program_error::ProgramError,
 };
 
 pub trait Lamports: WritableAccount + SignerAccount {

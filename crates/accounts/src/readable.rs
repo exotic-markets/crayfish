@@ -1,7 +1,7 @@
 use {
     aligned::{Aligned, A8},
     bytemuck::Pod,
-    crayfish_program::bytes::try_from_bytes_mut,
+    typhoon_program::bytes::try_from_bytes_mut,
 };
 
 pub trait ReadMut {

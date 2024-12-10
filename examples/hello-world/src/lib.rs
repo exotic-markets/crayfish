@@ -1,7 +1,7 @@
 use {
-    crayfish_handler_macro::handlers,
-    crayfish_program::{msg, program_error::ProgramError},
-    crayfish_program_id_macro::program_id,
+    typhoon_handler_macro::handlers,
+    typhoon_program::{msg, program_error::ProgramError},
+    typhoon_program_id_macro::program_id,
 };
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

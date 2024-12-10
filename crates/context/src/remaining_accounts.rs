@@ -1,6 +1,6 @@
 use {
     crate::HandlerContext,
-    crayfish_program::{program_error::ProgramError, RawAccountInfo},
+    typhoon_program::{program_error::ProgramError, RawAccountInfo},
 };
 
 impl<'a> HandlerContext<'a> for &'a [RawAccountInfo] {

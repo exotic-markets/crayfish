@@ -27,7 +27,7 @@ pub fn derive_space(input: TokenStream) -> TokenStream {
 
             quote! {
                 #[automatically_derived]
-                impl #impl_generics crayfish_space::InitSpace for #name #ty_generics #where_clause {
+                impl #impl_generics typhoon_space::InitSpace for #name #ty_generics #where_clause {
                     const INIT_SPACE: usize = #len_expr;
                 }
             }
@@ -40,7 +40,7 @@ pub fn derive_space(input: TokenStream) -> TokenStream {
 
             quote! {
                 #[automatically_derived]
-                impl crayfish_space::InitSpace for #name {
+                impl typhoon_space::InitSpace for #name {
                     const INIT_SPACE: usize = 1 + #max;
                 }
             }
@@ -59,7 +59,7 @@ fn add_trait_bounds(mut generics: Generics) -> Generics {
         if let GenericParam::Type(type_param) = param {
             type_param
                 .bounds
-                .push(parse_quote!(crayfish_space::InitSpace));
+                .push(parse_quote!(typhoon_space::InitSpace));
         }
     });
     generics
@@ -68,7 +68,7 @@ fn add_trait_bounds(mut generics: Generics) -> Generics {
 fn gen_max<T: Iterator<Item = TokenStream2>>(iter: T) -> TokenStream2 {
     iter.fold(
         quote!(0),
-        |acc, item| quote!(crayfish_space::max(#acc, #item)),
+        |acc, item| quote!(typhoon_space::max(#acc, #item)),
     )
 }
 
@@ -126,10 +126,10 @@ fn expr_from_ty(value: Type, args: &mut Vec<Arg>) -> syn::Result<Expr> {
 
                     Ok(parse_quote!((4 + #new_len * #arg_value)))
                 }
-                _ => Ok(parse_quote!(<#value as crayfish_space::InitSpace>::INIT_SPACE)),
+                _ => Ok(parse_quote!(<#value as typhoon_space::InitSpace>::INIT_SPACE)),
             }
         }
-        _ => Ok(parse_quote!(<#value as crayfish_space::InitSpace>::INIT_SPACE)),
+        _ => Ok(parse_quote!(<#value as typhoon_space::InitSpace>::INIT_SPACE)),
     }
 }
 

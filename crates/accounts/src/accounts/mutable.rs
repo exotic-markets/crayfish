@@ -1,7 +1,7 @@
 use {
     crate::{FromAccountInfo, ReadMut, ReadableAccount, Signer, SignerAccount, WritableAccount},
-    crayfish_errors::Error,
-    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref, RefMut},
+    typhoon_errors::Error,
+    typhoon_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref, RefMut},
 };
 
 pub struct Mut<T: ReadableAccount + AsRef<RawAccountInfo>>(T);

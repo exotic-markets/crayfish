@@ -38,12 +38,12 @@ impl ToTokens for ProgramId {
         let name = &self.name;
 
         quote! {
-            crayfish_program::declare_id!(#id);
+            typhoon_program::declare_id!(#id);
 
             pub struct #name;
 
-            impl crayfish_accounts::ProgramId for #name {
-                const ID: crayfish_program::pubkey::Pubkey = crate::ID;
+            impl typhoon_accounts::ProgramId for #name {
+                const ID: typhoon_program::pubkey::Pubkey = crate::ID;
             }
         }
         .to_tokens(tokens);

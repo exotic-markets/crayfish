@@ -15,19 +15,19 @@ aligned = "0.4.2"
 anchor-lang-idl-spec = "0.1.0"
 bytemuck = "1.19"
 cargo-manifest = "0.16"
-crayfish-accounts = { version = "0.1.0", path = "crates/accounts" }
-crayfish-account-macro = { version = "0.1.0", path = "crates/account-macro" }
-crayfish-context = { version = "0.1.0", path = "crates/context" }
-crayfish-context-macro = { version = "0.1.0", path = "crates/context-macro" }
-crayfish-errors = { version = "0.1.0", path = "crates/errors" }
-crayfish-handler-macro = { version = "0.1.0", path = "crates/handler-macro" }
-crayfish-metadata-extractor = { version = "0.1.0", path = "crates/metadata-extractor" }
-crayfish-program = { version = "0.1.0", path = "crates/program" }
-crayfish-program-id-macro = { version = "0.1.0", path = "crates/program-id-macro" }
-crayfish-space = { version = "0.1.0", path = "crates/space" }
-crayfish-space-macro = { version = "0.1.0", path = "crates/space-macro" }
-crayfish-syn = { version = "0.1.0", path = "crates/syn" }
-crayfish-traits = { version = "0.1.0", path = "crates/traits" }
+typhoon-accounts = { version = "0.1.0", path = "crates/accounts" }
+typhoon-account-macro = { version = "0.1.0", path = "crates/account-macro" }
+typhoon-context = { version = "0.1.0", path = "crates/context" }
+typhoon-context-macro = { version = "0.1.0", path = "crates/context-macro" }
+typhoon-errors = { version = "0.1.0", path = "crates/errors" }
+typhoon-handler-macro = { version = "0.1.0", path = "crates/handler-macro" }
+typhoon-metadata-extractor = { version = "0.1.0", path = "crates/metadata-extractor" }
+typhoon-program = { version = "0.1.0", path = "crates/program" }
+typhoon-program-id-macro = { version = "0.1.0", path = "crates/program-id-macro" }
+typhoon-space = { version = "0.1.0", path = "crates/space" }
+typhoon-space-macro = { version = "0.1.0", path = "crates/space-macro" }
+typhoon-syn = { version = "0.1.0", path = "crates/syn" }
+typhoon-traits = { version = "0.1.0", path = "crates/traits" }
 heck = "0.5.0"
 litesvm = "0.3.0"
 nostd-system-program = { git = "https://github.com/Aursen/nostdinfo-programs" }

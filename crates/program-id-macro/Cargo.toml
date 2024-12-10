@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-program-id-macro"
+name = "typhoon-program-id-macro"
 version.workspace = true
 rust-version.workspace = true
 edition.workspace = true

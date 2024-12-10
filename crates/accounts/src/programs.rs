@@ -1,7 +1,7 @@
-use {crate::ProgramId, crayfish_program::system_program};
+use {crate::ProgramId, typhoon_program::system_program};
 
 pub struct System;
 
 impl ProgramId for System {
-    const ID: crayfish_program::pubkey::Pubkey = system_program::ID;
+    const ID: typhoon_program::pubkey::Pubkey = system_program::ID;
 }

@@ -1,14 +1,14 @@
 use {
     bytemuck::{Pod, Zeroable},
-    crayfish_account_macro::account,
-    crayfish_accounts::{
+    typhoon_account_macro::account,
+    typhoon_accounts::{
         Account, FromAccountInfo, Mut, Program, ReadableAccount, Signer, System, WritableAccount,
     },
-    crayfish_context::args::Args,
-    crayfish_context_macro::context,
-    crayfish_handler_macro::handlers,
-    crayfish_program::{msg, program_error::ProgramError},
-    crayfish_program_id_macro::program_id,
+    typhoon_context::args::Args,
+    typhoon_context_macro::context,
+    typhoon_handler_macro::handlers,
+    typhoon_program::{msg, program_error::ProgramError},
+    typhoon_program_id_macro::program_id,
 };
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

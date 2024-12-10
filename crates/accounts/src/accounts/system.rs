@@ -1,7 +1,7 @@
 use {
     crate::{FromAccountInfo, ReadableAccount},
-    crayfish_errors::Error,
-    crayfish_program::{
+    typhoon_errors::Error,
+    typhoon_program::{
         program_error::ProgramError, pubkey::Pubkey, system_program, RawAccountInfo, Ref,
     },
 };

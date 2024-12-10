@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-traits"
+name = "typhoon-traits"
 version.workspace = true
 rust-version.workspace = true
 edition.workspace = true
@@ -9,5 +9,5 @@ repository.workspace = true
 
 [dependencies]
 bytemuck.workspace = true
-crayfish-accounts.workspace = true
-crayfish-program.workspace = true
+typhoon-accounts.workspace = true
+typhoon-program.workspace = true

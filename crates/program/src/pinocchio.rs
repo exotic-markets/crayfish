@@ -13,7 +13,7 @@ pub use pinocchio_pubkey::declare_id;
 #[macro_export]
 macro_rules! program_entrypoint {
     ($name: ident) => {
-        use crayfish_program::entrypoint;
+        use typhoon_program::entrypoint;
 
         $crate::entrypoint!(process_instruction);
     };

@@ -662,20 +662,20 @@ name = "counter"
 version = "0.1.0"
 dependencies = [
  "bytemuck",
- "crayfish-account-macro",
- "crayfish-accounts",
- "crayfish-context",
- "crayfish-context-macro",
- "crayfish-handler-macro",
- "crayfish-program",
- "crayfish-program-id-macro",
- "crayfish-space",
- "crayfish-traits",
  "litesvm",
  "pinocchio",
  "solana-nostd-entrypoint",
  "solana-program 1.18.26",
  "solana-sdk",
+ "typhoon-account-macro",
+ "typhoon-accounts",
+ "typhoon-context",
+ "typhoon-context-macro",
+ "typhoon-handler-macro",
+ "typhoon-program",
+ "typhoon-program-id-macro",
+ "typhoon-space",
+ "typhoon-traits",
 ]
 
 [[package]]
@@ -685,129 +685,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16b80225097f2e5ae4e7179dd2266824648f3e2f49d9134d584b76389d31c4c3"
 dependencies = [
  "libc",
-]
-
-[[package]]
-name = "crayfish-account-macro"
-version = "0.1.0"
-dependencies = [
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-accounts"
-version = "0.1.0"
-dependencies = [
- "aligned",
- "bytemuck",
- "crayfish-errors",
- "crayfish-program",
-]
-
-[[package]]
-name = "crayfish-context"
-version = "0.1.0"
-dependencies = [
- "aligned",
- "bytemuck",
- "crayfish-program",
- "paste",
-]
-
-[[package]]
-name = "crayfish-context-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-cpi-generator"
-version = "0.1.0"
-
-[[package]]
-name = "crayfish-errors"
-version = "0.1.0"
-dependencies = [
- "crayfish-program",
- "num-traits",
- "thiserror",
-]
-
-[[package]]
-name = "crayfish-handler-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-idl-generator"
-version = "0.1.0"
-dependencies = [
- "crayfish-metadata-extractor",
-]
-
-[[package]]
-name = "crayfish-metadata-extractor"
-version = "0.1.0"
-dependencies = [
- "cargo-manifest",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-program"
-version = "0.1.0"
-dependencies = [
- "aligned",
- "nostd-system-program",
- "pinocchio",
- "pinocchio-pubkey",
- "pinocchio-system",
- "solana-nostd-entrypoint",
-]
-
-[[package]]
-name = "crayfish-program-id-macro"
-version = "0.1.0"
-dependencies = [
- "cargo-manifest",
- "heck 0.5.0",
- "proc-macro2",
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-space"
-version = "0.1.0"
-dependencies = [
- "crayfish-program",
- "crayfish-space-macro",
-]
-
-[[package]]
-name = "crayfish-space-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
-name = "crayfish-traits"
-version = "0.1.0"
-dependencies = [
- "bytemuck",
- "crayfish-accounts",
- "crayfish-program",
 ]
 
 [[package]]
@@ -1306,17 +1183,17 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 name = "hello-world"
 version = "0.1.0"
 dependencies = [
- "crayfish-accounts",
- "crayfish-context",
- "crayfish-context-macro",
- "crayfish-handler-macro",
- "crayfish-program",
- "crayfish-program-id-macro",
  "litesvm",
  "pinocchio",
  "solana-nostd-entrypoint",
  "solana-program 1.18.26",
  "solana-sdk",
+ "typhoon-accounts",
+ "typhoon-context",
+ "typhoon-context-macro",
+ "typhoon-handler-macro",
+ "typhoon-program",
+ "typhoon-program-id-macro",
 ]
 
 [[package]]
@@ -1635,20 +1512,20 @@ name = "instruction-data"
 version = "0.1.0"
 dependencies = [
  "bytemuck",
- "crayfish-account-macro",
- "crayfish-accounts",
- "crayfish-context",
- "crayfish-context-macro",
- "crayfish-handler-macro",
- "crayfish-program",
- "crayfish-program-id-macro",
- "crayfish-space",
- "crayfish-traits",
  "litesvm",
  "pinocchio",
  "solana-nostd-entrypoint",
  "solana-program 1.18.26",
  "solana-sdk",
+ "typhoon-account-macro",
+ "typhoon-accounts",
+ "typhoon-context",
+ "typhoon-context-macro",
+ "typhoon-handler-macro",
+ "typhoon-program",
+ "typhoon-program-id-macro",
+ "typhoon-space",
+ "typhoon-traits",
 ]
 
 [[package]]
@@ -3574,18 +3451,18 @@ version = "0.1.0"
 dependencies = [
  "aligned",
  "bytemuck",
- "crayfish-accounts",
- "crayfish-context",
- "crayfish-context-macro",
- "crayfish-handler-macro",
- "crayfish-program",
- "crayfish-program-id-macro",
- "crayfish-traits",
  "litesvm",
  "pinocchio",
  "solana-nostd-entrypoint",
  "solana-program 1.18.26",
  "solana-sdk",
+ "typhoon-accounts",
+ "typhoon-context",
+ "typhoon-context-macro",
+ "typhoon-handler-macro",
+ "typhoon-program",
+ "typhoon-program-id-macro",
+ "typhoon-traits",
 ]
 
 [[package]]
@@ -3599,6 +3476,129 @@ name = "typenum"
 version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "42ff0bf0c66b8238c6f3b578df37d0b7848e55df8577b3f74f92a69acceeb825"
+
+[[package]]
+name = "typhoon-account-macro"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-accounts"
+version = "0.1.0"
+dependencies = [
+ "aligned",
+ "bytemuck",
+ "typhoon-errors",
+ "typhoon-program",
+]
+
+[[package]]
+name = "typhoon-context"
+version = "0.1.0"
+dependencies = [
+ "aligned",
+ "bytemuck",
+ "paste",
+ "typhoon-program",
+]
+
+[[package]]
+name = "typhoon-context-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-cpi-generator"
+version = "0.1.0"
+
+[[package]]
+name = "typhoon-errors"
+version = "0.1.0"
+dependencies = [
+ "num-traits",
+ "thiserror",
+ "typhoon-program",
+]
+
+[[package]]
+name = "typhoon-handler-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-idl-generator"
+version = "0.1.0"
+dependencies = [
+ "typhoon-metadata-extractor",
+]
+
+[[package]]
+name = "typhoon-metadata-extractor"
+version = "0.1.0"
+dependencies = [
+ "cargo-manifest",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-program"
+version = "0.1.0"
+dependencies = [
+ "aligned",
+ "nostd-system-program",
+ "pinocchio",
+ "pinocchio-pubkey",
+ "pinocchio-system",
+ "solana-nostd-entrypoint",
+]
+
+[[package]]
+name = "typhoon-program-id-macro"
+version = "0.1.0"
+dependencies = [
+ "cargo-manifest",
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-space"
+version = "0.1.0"
+dependencies = [
+ "typhoon-program",
+ "typhoon-space-macro",
+]
+
+[[package]]
+name = "typhoon-space-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.89",
+]
+
+[[package]]
+name = "typhoon-traits"
+version = "0.1.0"
+dependencies = [
+ "bytemuck",
+ "typhoon-accounts",
+ "typhoon-program",
+]
 
 [[package]]
 name = "unicode-ident"

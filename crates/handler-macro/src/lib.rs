@@ -28,23 +28,23 @@ impl ToTokens for Handlers {
         let instructions = self.instructions.iter().enumerate().map(|(i, val)| {
             let i = i as u8;
             quote! {
-                #i => crayfish_context::handle(accounts, instruction_data_inner, #val)?,
+                #i => typhoon_context::handle(accounts, instruction_data_inner, #val)?,
             }
         });
 
         let expanded = quote! {
-            crayfish_program::program_entrypoint!(process_instruction);
+            typhoon_program::program_entrypoint!(process_instruction);
 
             pub fn process_instruction(
-                _program_id: &crayfish_program::pubkey::Pubkey,
-                accounts: &[crayfish_program::RawAccountInfo],
+                _program_id: &typhoon_program::pubkey::Pubkey,
+                accounts: &[typhoon_program::RawAccountInfo],
                 instruction_data: &[u8],
-            ) -> crayfish_program::ProgramResult {
+            ) -> typhoon_program::ProgramResult {
                 let (instruction_discriminant, instruction_data_inner) = instruction_data.split_at(1);
                 match instruction_discriminant[0] {
                     #(#instructions)*
                     _ => {
-                        crayfish_program::msg!("Error: unknown instruction") //TODO
+                        typhoon_program::msg!("Error: unknown instruction") //TODO
                     },
                 }
                 Ok(())

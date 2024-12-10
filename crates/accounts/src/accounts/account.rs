@@ -2,11 +2,11 @@ use {
     crate::{FromAccountInfo, Owner, ReadableAccount},
     aligned::{Aligned, A8},
     bytemuck::Pod,
-    crayfish_errors::Error,
-    crayfish_program::{
+    std::marker::PhantomData,
+    typhoon_errors::Error,
+    typhoon_program::{
         bytes::try_from_bytes, program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref,
     },
-    std::marker::PhantomData,
 };
 
 pub struct Account<'a, T>

@@ -1,6 +1,6 @@
 use {
-    crayfish_program::pubkey::Pubkey,
-    crayfish_space::{InitSpace, Space},
+    typhoon_program::pubkey::Pubkey,
+    typhoon_space::{InitSpace, Space},
 };
 
 mod inside_mod {

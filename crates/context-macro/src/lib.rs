@@ -96,7 +96,7 @@ impl ToTokens for Context {
             // Add an `args` field to the context
             if let Fields::Named(fields) = &mut account_struct.fields {
                 fields.named.push(parse_quote! {
-                    pub args: crayfish_context::args::Args<#new_lifetime, #args_struct_name>
+                    pub args: typhoon_context::args::Args<#new_lifetime, #args_struct_name>
                 });
             }
 
@@ -115,9 +115,9 @@ impl ToTokens for Context {
 
             #account_struct
 
-            impl #impl_generics crayfish_context::HandlerContext<#new_lifetime> for #name #ty_generics #where_clause {
+            impl #impl_generics typhoon_context::HandlerContext<#new_lifetime> for #name #ty_generics #where_clause {
                 fn from_entrypoint(
-                    accounts: &mut &'info [crayfish_program::RawAccountInfo],
+                    accounts: &mut &'info [typhoon_program::RawAccountInfo],
                     instruction_data: &mut &'info [u8],
                 ) -> Result<Self, ProgramError> {
                     let [#name_list, rem @ ..] = accounts else {

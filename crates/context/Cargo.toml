@@ -1,5 +1,5 @@
 [package]
-name = "crayfish-context"
+name = "typhoon-context"
 version.workspace = true
 rust-version.workspace = true
 edition.workspace = true
@@ -10,5 +10,5 @@ repository.workspace = true
 [dependencies]
 aligned.workspace = true
 bytemuck.workspace = true
-crayfish-program.workspace = true
+typhoon-program.workspace = true
 paste.workspace = true

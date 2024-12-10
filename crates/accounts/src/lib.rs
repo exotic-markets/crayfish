@@ -4,8 +4,8 @@ mod readable;
 
 pub use {accounts::*, programs::*, readable::*};
 use {
-    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref, RefMut},
     sealed::Sealed,
+    typhoon_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref, RefMut},
 };
 
 pub trait ProgramId {
@@ -36,7 +36,7 @@ pub trait SignerAccount: ReadableAccount + Sealed {}
 mod sealed {
     use {
         super::{Mut, ReadableAccount, Signer},
-        crayfish_program::RawAccountInfo,
+        typhoon_program::RawAccountInfo,
     };
 
     pub trait Sealed {}

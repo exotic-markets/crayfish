@@ -70,6 +70,8 @@ impl_handler!(T1, T2);
 impl_handler!(T1, T2, T3);
 impl_handler!(T1, T2, T3, T4);
 impl_handler!(T1, T2, T3, T4, T5);
+impl_handler!(T1, T2, T3, T4, T5, T6);
+impl_handler!(T1, T2, T3, T4, T5, T6, T7);
 
 pub fn handle<'a, T, H>(
     mut accounts: &'a [RawAccountInfo],

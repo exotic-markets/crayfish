@@ -24,9 +24,9 @@ impl<'a> AsRef<RawAccountInfo> for Signer<'a> {
     }
 }
 
-impl<'a> SignerAccount for Signer<'a> {}
+impl SignerAccount for Signer<'_> {}
 
-impl<'a> ReadableAccount for Signer<'a> {
+impl ReadableAccount for Signer<'_> {
     type DataType = [u8];
 
     fn key(&self) -> &Pubkey {

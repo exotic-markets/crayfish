@@ -34,4 +34,4 @@ pub trait Lamports: WritableAccount + SignerAccount {
     }
 }
 
-impl<'a> Lamports for Mut<Signer<'a>> {}
+impl Lamports for Mut<Signer<'_>> {}

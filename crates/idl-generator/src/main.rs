@@ -30,7 +30,7 @@ pub fn main() {
         let command = Command::new("cargo") //TODO do it without expand `cargo +nightly rustc --profile=check -- -Zunpretty=expanded`
             .arg("expand")
             .arg("--lib")
-            .arg(&format!("--package={}", manifest.package.unwrap().name))
+            .arg(format!("--package={}", manifest.package.unwrap().name))
             .stderr(Stdio::inherit())
             .output()
             .unwrap()

@@ -42,7 +42,7 @@ mod sealed {
     pub trait Sealed {}
 
     impl<T> Sealed for Mut<T> where T: ReadableAccount + AsRef<RawAccountInfo> {}
-    impl<'a> Sealed for Signer<'a> {}
+    impl Sealed for Signer<'_> {}
 }
 
 pub trait FromAccountInfo<'a>: Sized {

@@ -90,7 +90,7 @@ fn gen_account_instruction(
             }
             IdlInstructionAccountItem::Single(account) => {
                 let name = &account.name;
-                let ident = Ident::new(&name, Span::call_site());
+                let ident = Ident::new(name, Span::call_site());
                 let is_writable = account.writable;
                 let is_signer = account.signer;
 
@@ -134,7 +134,7 @@ fn gen_instructions(idl: &Idl) -> proc_macro2::TokenStream {
                 #(pub #accounts: &'a crayfish_program::RawAccountInfo,)*
             }
 
-            impl<'a> #ident<'a> {
+            impl #ident<'_> {
                 #[inline(always)]
                 pub fn invoke(&self) -> #program_result {
                     self.invoke_signed(&[])

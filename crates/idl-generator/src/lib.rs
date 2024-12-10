@@ -1,13 +1,13 @@
 use {
     anchor_lang_idl_spec::{
-        Idl, IdlAccount, IdlDefinedFields, IdlField, IdlMetadata, IdlRepr, IdlReprModifier,
-        IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefTy, IDL_SPEC,
+        Idl, IdlAccount, IdlArrayLen, IdlDefinedFields, IdlField, IdlMetadata, IdlRepr,
+        IdlReprModifier, IdlSerialization, IdlType, IdlTypeDef, IdlTypeDefTy, IDL_SPEC,
     },
     crayfish_metadata_extractor::{
         account::AccountState,
         definition::{DefinedField, DefinedFields, TypeDef},
         program::Program,
-        ty::{FloatSize, NumberSize, Type},
+        ty::{FloatSize, Len, NumberSize, Type},
     },
     std::path::Path,
 };
@@ -165,7 +165,13 @@ impl Convert<IdlType> for Type {
                     IdlType::Vec(Box::new(ty.convert()))
                 }
             }
-            Type::Array(_, len) => todo!(),
+            Type::Array(ty, len) => {
+                let array_len = match len {
+                    Len::Number(size) => IdlArrayLen::Value(size),
+                    Len::Const(name) => IdlArrayLen::Generic(name),
+                };
+                IdlType::Array(Box::new(ty.convert()), array_len)
+            }
             Type::Option(ty) => IdlType::Option(Box::new(ty.convert())),
             Type::Defined(name) => IdlType::Defined {
                 name,

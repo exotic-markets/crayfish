@@ -103,6 +103,8 @@ impl TryFrom<&SynType> for Type {
                         size: FloatSize::Eight,
                     }),
 
+                    "String" | "str" => Ok(Type::String),
+
                     // Container types
                     "Vec" => {
                         let PathArguments::AngleBracketed(generic_args) = &segment.arguments else {
@@ -123,6 +125,7 @@ impl TryFrom<&SynType> for Type {
                 }
             }
             SynType::Array(_type_array) => todo!(),
+            SynType::Reference(type_ref) => Type::try_from(type_ref.elem.as_ref()),
             _ => Err(syn::Error::new(value.span(), "Invalid type used.")),
         }
     }
@@ -133,7 +136,7 @@ mod tests {
     use {super::*, syn::parse_quote};
 
     #[test]
-    fn test_bool() {
+    fn parse_bool() {
         let ty: SynType = parse_quote!(bool);
 
         let parsed_ty = Type::try_from(&ty).unwrap();
@@ -156,7 +159,7 @@ mod tests {
     }
 
     #[test]
-    fn test_numbers() {
+    fn parse_numbers() {
         // Signed
         test_number!(i8, true, One);
         test_number!(i16, true, Two);
@@ -173,10 +176,41 @@ mod tests {
     }
 
     #[test]
-    fn test_floats() {}
+    fn parse_string() {
+        let ty: SynType = parse_quote!(String);
+        let parsed_ty = Type::try_from(&ty).unwrap();
+        assert_eq!(parsed_ty, Type::String);
+
+        let ty: SynType = parse_quote!(&'static str);
+        let parsed_ty = Type::try_from(&ty).unwrap();
+        assert_eq!(parsed_ty, Type::String);
+    }
 
     #[test]
-    fn test_pubkey() {
+    fn parse_floats() {
+        let ty: SynType = parse_quote!(f32);
+
+        let parsed_ty = Type::try_from(&ty).unwrap();
+        assert_eq!(
+            parsed_ty,
+            Type::Float {
+                size: FloatSize::Four
+            }
+        );
+
+        let ty: SynType = parse_quote!(f64);
+
+        let parsed_ty = Type::try_from(&ty).unwrap();
+        assert_eq!(
+            parsed_ty,
+            Type::Float {
+                size: FloatSize::Eight
+            }
+        );
+    }
+
+    #[test]
+    fn parse_pubkey() {
         let ty: SynType = parse_quote!(Pubkey);
 
         let parsed_ty = Type::try_from(&ty).unwrap();

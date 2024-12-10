@@ -55,5 +55,5 @@ pub trait SystemCpi: WritableAccount {
     }
 }
 
-impl<'a> SystemCpi for Mut<SystemAccount<'a>> {}
-impl<'a> SystemCpi for Mut<SignerAccount<'a>> {}
+impl SystemCpi for Mut<SystemAccount<'_>> {}
+impl SystemCpi for Mut<SignerAccount<'_>> {}

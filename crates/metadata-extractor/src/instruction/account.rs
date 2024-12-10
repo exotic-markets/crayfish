@@ -60,20 +60,21 @@ fn extract_ty_from_arguments(args: &PathArguments) -> Option<&Type> {
 
 fn extract_account_flags(ty: &Type, account_flags: &mut AccountFlags) {
     if let Some(PathSegment { ident, arguments }) = extract_ty_segment(ty) {
-        match ident {
-            i if i == "Option" => {
+        let name = ident.to_string();
+        match name.as_str() {
+            "Option" => {
                 if let Some(inner_ty) = extract_ty_from_arguments(arguments) {
                     account_flags.is_optional = true;
                     extract_account_flags(inner_ty, account_flags);
                 }
             }
-            i if i == "Mut" => {
+            "Mut" => {
                 if let Some(inner_ty) = extract_ty_from_arguments(arguments) {
                     account_flags.is_mutable = true;
                     extract_account_flags(inner_ty, account_flags);
                 }
             }
-            i if i == "Signer" => account_flags.is_signer = true,
+            "Signer" => account_flags.is_signer = true,
             _ => (),
         }
     }

@@ -1,14 +1,17 @@
 use {
-    crate::{readable::Readable, FromAccountInfo, Owner, ReadableAccount},
+    crate::{FromAccountInfo, Owner, ReadableAccount},
+    aligned::{Aligned, A8},
     bytemuck::Pod,
     crayfish_errors::Error,
-    crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref},
+    crayfish_program::{
+        bytes::try_from_bytes, program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref,
+    },
     std::marker::PhantomData,
 };
 
 pub struct Account<'a, T>
 where
-    T: Owner + Pod,
+    T: Pod,
 {
     info: &'a RawAccountInfo,
     _phantom: PhantomData<T>,
@@ -32,7 +35,7 @@ where
 
 impl<T> AsRef<RawAccountInfo> for Account<'_, T>
 where
-    T: Owner + Pod,
+    T: Pod,
 {
     fn as_ref(&self) -> &RawAccountInfo {
         self.info
@@ -41,7 +44,7 @@ where
 
 impl<T> ReadableAccount for Account<'_, T>
 where
-    T: Owner + Pod,
+    T: Pod,
 {
     type DataType = T;
 
@@ -60,6 +63,9 @@ where
     fn data(&self) -> Result<Ref<Self::DataType>, ProgramError> {
         let data = self.info.try_borrow_data()?;
 
-        Ref::filter_map(data, |data| T::read(data)).map_err(|_| ProgramError::InvalidAccountData)
+        Ref::filter_map(data, |data| {
+            try_from_bytes(&data[..std::mem::size_of::<Aligned<A8, Self>>()])
+        })
+        .map_err(|_| ProgramError::InvalidAccountData)
     }
 }

@@ -1,5 +1,5 @@
 use {
-    crate::{FromAccountInfo, Readable, ReadableAccount, Signer, SignerAccount, WritableAccount},
+    crate::{FromAccountInfo, ReadMut, ReadableAccount, Signer, SignerAccount, WritableAccount},
     crayfish_errors::Error,
     crayfish_program::{program_error::ProgramError, pubkey::Pubkey, RawAccountInfo, Ref, RefMut},
 };
@@ -51,9 +51,10 @@ where
     }
 }
 
-impl<T> WritableAccount for Mut<T>
+impl<T, U> WritableAccount for Mut<T>
 where
-    T: ReadableAccount + AsRef<RawAccountInfo>,
+    T: ReadableAccount<DataType = U> + AsRef<RawAccountInfo>,
+    U: ReadMut + ?Sized,
 {
     fn realloc(&self, new_len: usize, zero_init: bool) -> Result<(), ProgramError> {
         self.0.as_ref().realloc(new_len, zero_init)

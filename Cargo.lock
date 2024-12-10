@@ -758,6 +758,7 @@ name = "crayfish-metadata-extractor"
 version = "0.1.0"
 dependencies = [
  "cargo-manifest",
+ "five8_const",
  "syn 2.0.89",
 ]
 

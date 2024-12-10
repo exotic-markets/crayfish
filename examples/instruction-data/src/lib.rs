@@ -5,7 +5,7 @@ use {
         Account, FromAccountInfo, Mut, Program, ReadableAccount, Signer, System, WritableAccount,
     },
     crayfish_context::args::Args,
-    crayfish_context_macro::{args, context},
+    crayfish_context_macro::context,
     crayfish_handler_macro::handlers,
     crayfish_program::{msg, program_error::ProgramError},
     crayfish_program_id_macro::program_id,

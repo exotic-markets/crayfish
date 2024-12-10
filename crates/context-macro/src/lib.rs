@@ -92,19 +92,22 @@ impl ToTokens for Context {
         let (name_list, accounts_assign) = self.accounts.split_for_impl();
         let (args_struct_name, args_struct, args_assign) = self.args.split_for_impl(name);
 
-        match account_struct {
-            Item::Struct(account_struct) => {
-                // Add an `args` field to the context
-                if let Fields::Named(fields) = &mut account_struct.fields {
-                    fields.named.push(parse_quote! {
-                        pub args: crayfish_context::args::Args<#new_lifetime, #args_struct_name>
-                    });
-                }
-
-                // Remove attributes
-                account_struct.attrs.clear();
+        if let Item::Struct(account_struct) = account_struct {
+            // Add an `args` field to the context
+            if let Fields::Named(fields) = &mut account_struct.fields {
+                fields.named.push(parse_quote! {
+                    pub args: crayfish_context::args::Args<#new_lifetime, #args_struct_name>
+                });
             }
-            _ => panic!("Item is supposed to be a struct"),
+
+            // Remove the args attribute
+            account_struct
+                .attrs
+                .retain(|attr| !attr.meta.path().is_ident("args"));
+        } else {
+            return syn::Error::new(account_struct.span(), "Item is supposed to be a struct")
+                .to_compile_error()
+                .to_tokens(tokens);
         }
 
         let expanded = quote! {

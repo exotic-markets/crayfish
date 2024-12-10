@@ -30,7 +30,7 @@ where
         _accounts: &mut &'a [RawAccountInfo],
         instruction_data: &mut &'a [u8],
     ) -> Result<Self, ProgramError> {
-        let arg: &T = try_from_bytes(&instruction_data[0..std::mem::size_of::<T>()])
+        let arg: &T = try_from_bytes(&instruction_data[..std::mem::size_of::<T>()])
             .ok_or(ProgramError::InvalidInstructionData)?;
 
         let (_, remaining) = instruction_data.split_at(std::mem::size_of::<Aligned<A8, T>>());

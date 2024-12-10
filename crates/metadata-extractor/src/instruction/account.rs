@@ -1,6 +1,6 @@
 use {
     crate::doc::Docs,
-    syn::{visit::Visit, Field, GenericArgument, PathArguments, PathSegment, Type},
+    syn::{Field, GenericArgument, PathArguments, PathSegment, Type},
 };
 
 #[derive(Debug, Default)]
@@ -22,11 +22,7 @@ impl From<&Field> for InstructionAccount {
         let mut flags = AccountFlags::default();
         extract_account_flags(&value.ty, &mut flags);
 
-        let mut docs = Docs::default();
-        value
-            .attrs
-            .iter()
-            .for_each(|attr| docs.visit_attribute(attr));
+        let docs = Docs::from(value.attrs.as_slice());
 
         // TODO field with no name
         let name = value

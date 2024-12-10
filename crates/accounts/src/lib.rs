@@ -17,7 +17,7 @@ pub trait Owner {
 }
 
 pub trait ReadableAccount: AsRef<RawAccountInfo> {
-    type DataType: ?Sized + Readable;
+    type DataType: ?Sized;
 
     fn key(&self) -> &Pubkey;
     fn owner(&self) -> &Pubkey;

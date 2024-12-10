@@ -115,6 +115,7 @@ impl ToTokens for Context {
 
             #account_struct
 
+            #[automatically_derived]
             impl #impl_generics crayfish_context::HandlerContext<#new_lifetime> for #name #ty_generics #where_clause {
                 fn from_entrypoint(
                     accounts: &mut &'info [crayfish_program::RawAccountInfo],

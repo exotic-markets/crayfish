@@ -1,6 +1,6 @@
 use {
     crate::doc::Docs,
-    syn::{visit::Visit, Field, GenericArgument, PathArguments, PathSegment, Type},
+    syn::{Field, GenericArgument, PathArguments, PathSegment, Type},
 };
 
 #[derive(Debug, Default)]
@@ -22,11 +22,7 @@ impl From<&Field> for InstructionAccount {
         let mut flags = AccountFlags::default();
         extract_account_flags(&value.ty, &mut flags);
 
-        let mut docs = Docs::default();
-        value
-            .attrs
-            .iter()
-            .for_each(|attr| docs.visit_attribute(attr));
+        let docs = Docs::from(value.attrs.as_slice());
 
         // TODO field with no name
         let name = value
@@ -60,20 +56,21 @@ fn extract_ty_from_arguments(args: &PathArguments) -> Option<&Type> {
 
 fn extract_account_flags(ty: &Type, account_flags: &mut AccountFlags) {
     if let Some(PathSegment { ident, arguments }) = extract_ty_segment(ty) {
-        match ident {
-            i if i == "Option" => {
+        let name = ident.to_string();
+        match name.as_str() {
+            "Option" => {
                 if let Some(inner_ty) = extract_ty_from_arguments(arguments) {
                     account_flags.is_optional = true;
                     extract_account_flags(inner_ty, account_flags);
                 }
             }
-            i if i == "Mut" => {
+            "Mut" => {
                 if let Some(inner_ty) = extract_ty_from_arguments(arguments) {
                     account_flags.is_mutable = true;
                     extract_account_flags(inner_ty, account_flags);
                 }
             }
-            i if i == "Signer" => account_flags.is_signer = true,
+            "Signer" => account_flags.is_signer = true,
             _ => (),
         }
     }

@@ -68,15 +68,15 @@ pub fn parse_constraints(input: ParseStream) -> syn::Result<Vec<Constraint>> {
     let mut constraints = Vec::new();
 
     while !input.is_empty() {
-        let name: Ident = input.parse()?;
-        match name {
-            i if i == "init" => {
+        let name = input.parse::<Ident>()?.to_string();
+        match name.as_str() {
+            "init" => {
                 constraints.push(Constraint::Init(ConstraintInit));
             }
-            i if i == "payer" => {
+            "payer" => {
                 constraints.push(Constraint::Payer(ConstraintPayer::parse(input)?));
             }
-            i if i == "space" => {
+            "space" => {
                 constraints.push(Constraint::Space(ConstraintSpace::parse(input)?));
             }
             _ => return Err(syn::Error::new(input.span(), "Unknow constraint.")),

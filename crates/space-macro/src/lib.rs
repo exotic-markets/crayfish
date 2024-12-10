@@ -106,16 +106,17 @@ fn expr_from_ty(value: Type, args: &mut Vec<Arg>) -> syn::Result<Expr> {
                 return Err(syn::Error::new(value.span(), "Invalid path type."));
             };
             let ident = &segment.ident;
+            let name = ident.to_string();
 
-            match ident {
-                i if i == "String" => {
+            match name.as_str() {
+                "String" => {
                     let Some(arg_value) = arg else {
                         return Err(syn::Error::new(ident.span(), "No max_len specified."));
                     };
 
                     Ok(parse_quote!((4 + #arg_value)))
                 }
-                i if i == "Vec" => {
+                "Vec" => {
                     let Some(arg_value) = arg else {
                         return Err(syn::Error::new(ident.span(), "No max_len specified."));
                     };

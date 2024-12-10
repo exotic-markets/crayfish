@@ -28,7 +28,7 @@ fn integration_test() {
 
     svm.airdrop(&admin_pk, 10 * LAMPORTS_PER_SOL).unwrap();
 
-    let program_id = pubkey::Pubkey::new_from_array(instruction_data::id());
+    let program_id = pubkey!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
     let program_bytes = read_program();
 
     svm.add_program(program_id, &program_bytes);

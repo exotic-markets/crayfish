@@ -1,8 +1,4 @@
-use {
-    typhoon_handler_macro::handlers,
-    typhoon_program::{msg, program_error::ProgramError},
-    typhoon_program_id_macro::program_id,
-};
+use typhoon::prelude::*;
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 

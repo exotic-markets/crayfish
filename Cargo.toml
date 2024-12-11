@@ -15,6 +15,7 @@ aligned = "0.4.2"
 anchor-lang-idl-spec = "0.1.0"
 bytemuck = "1.19"
 cargo-manifest = "0.16"
+typhoon = { version = "0.1.0", path = "crates/lib" }
 typhoon-accounts = { version = "0.1.0", path = "crates/accounts" }
 typhoon-account-macro = { version = "0.1.0", path = "crates/account-macro" }
 typhoon-context = { version = "0.1.0", path = "crates/context" }

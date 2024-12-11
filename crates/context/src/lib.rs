@@ -3,8 +3,10 @@ use {
     typhoon_program::{program_error::ProgramError, RawAccountInfo},
 };
 
-pub mod args;
+mod args;
 mod remaining_accounts;
+
+pub use args::*;
 
 pub trait HandlerContext<'a>: Sized {
     fn from_entrypoint(

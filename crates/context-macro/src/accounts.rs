@@ -65,14 +65,14 @@ impl ToTokens for Assign<'_> {
 
                 quote! {
                     let #name: #ty = {
-                        let system_acc = <typhoon_accounts::Mut<typhoon_accounts::SystemAccount> as typhoon_accounts::FromAccountInfo>::try_from_info(#name)?;
-                        typhoon_traits::SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, None)?;
+                        let system_acc = <Mut<SystemAccount> as FromAccountInfo>::try_from_info(#name)?;
+                        SystemCpi::create_account(&system_acc, &#payer, &crate::ID, #space as u64, None)?;
                         Mut::try_from_info(#name)?
                     };
                 }
             } else {
                 quote! {
-                    let #name = <#ty as typhoon_accounts::FromAccountInfo>::try_from_info(#name)?;
+                    let #name = <#ty as FromAccountInfo>::try_from_info(#name)?;
                 }
             }
         });

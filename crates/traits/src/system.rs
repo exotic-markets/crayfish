@@ -7,7 +7,7 @@ use {
         pubkey::Pubkey,
         system_program::instructions::{Allocate, Assign, CreateAccount, Transfer},
         sysvars::{rent::Rent, Sysvar},
-        Signer,
+        SignerSeeds,
     },
 };
 
@@ -33,7 +33,7 @@ pub trait SystemCpi: WritableAccount {
         payer: &impl ReadableAccount,
         owner: &Pubkey,
         space: u64,
-        seeds: Option<&[Signer]>,
+        seeds: Option<&[SignerSeeds]>,
     ) -> Result<(), ProgramError> {
         CreateAccount {
             from: payer.as_ref(),

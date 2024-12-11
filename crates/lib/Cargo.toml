@@ -1,0 +1,21 @@
+[package]
+name = "typhoon"
+version.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[features]
+pinocchio = ["typhoon-program/pinocchio"]
+
+[dependencies]
+typhoon-accounts.workspace = true
+typhoon-account-macro.workspace = true
+typhoon-context.workspace = true
+typhoon-context-macro.workspace = true
+typhoon-handler-macro.workspace = true
+typhoon-program.workspace = true
+typhoon-program-id-macro.workspace = true
+typhoon-traits.workspace = true

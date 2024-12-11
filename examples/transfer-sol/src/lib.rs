@@ -1,12 +1,6 @@
 use {
     bytemuck::{Pod, Zeroable},
-    typhoon_accounts::{Mut, Program, Signer, System, SystemAccount},
-    typhoon_context::args::Args,
-    typhoon_context_macro::context,
-    typhoon_handler_macro::handlers,
-    typhoon_program::program_error::ProgramError,
-    typhoon_program_id_macro::program_id,
-    typhoon_traits::{Lamports, SystemCpi},
+    typhoon::prelude::*,
 };
 
 program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");

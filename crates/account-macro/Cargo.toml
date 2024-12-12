@@ -11,5 +11,10 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
-syn.workspace = true
+syn = { workspace = true, features = ["full"] }
 quote.workspace = true
+
+[dev-dependencies]
+trybuild.workspace = true
+bytemuck.workspace = true
+typhoon = { workspace = true, features = ["pinocchio"] }

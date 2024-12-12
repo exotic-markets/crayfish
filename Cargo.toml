@@ -16,6 +16,7 @@ anchor-lang-idl-spec = "0.1.0"
 bytemuck = "1.19"
 cargo-manifest = "0.16"
 typhoon = { version = "0.1.0", path = "crates/lib" }
+trybuild = "1.0"
 typhoon-accounts = { version = "0.1.0", path = "crates/accounts" }
 typhoon-account-macro = { version = "0.1.0", path = "crates/account-macro" }
 typhoon-context = { version = "0.1.0", path = "crates/context" }

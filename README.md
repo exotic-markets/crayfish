@@ -12,4 +12,78 @@
     </p>
 </div>
 
-TODO
+## 🗒️ Note
+
+- **Typhoon is in active development, so all APIs are subject to change.**
+- **This code is unaudited. Use at your own risk.**
+
+## 📚 Installation
+
+To get started with Typhoon, add it to your Rust project using Cargo:
+```bash
+cargo add typhoon
+```
+
+## 🚀 Getting Started
+
+Here’s a quick example to show how Typhoon simplifies Solana program development:
+```rust
+use {
+    bytemuck::{Pod, Zeroable},
+    typhoon::prelude::*,
+};
+
+program_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+#[context]
+pub struct InitContext {
+    pub payer: Signer,
+    #[constraint(
+        init,
+        payer = payer,
+        space = Counter::SPACE
+    )]
+    pub counter: Mut<Account<Counter>>,
+    pub system: Program<System>,
+}
+
+#[context]
+pub struct IncrementContext {
+    pub counter: Mut<Account<Counter>>,
+}
+
+handlers! {
+    initialize,
+    increment
+}
+
+pub fn initialize(_: InitContext) -> Result<(), ProgramError> {
+    Ok(())
+}
+
+pub fn increment(ctx: IncrementContext) -> Result<(), ProgramError> {
+    ctx.counter.mut_data()?.count += 1;
+
+    Ok(())
+}
+
+#[account]
+pub struct Counter {
+    pub count: u64,
+}
+
+impl Counter {
+    const SPACE: usize = std::mem::size_of::<Counter>();
+}
+```
+
+## 📦 Examples
+
+Explore the [`examples`](./examples) directory for templates and use-case scenarios to kickstart your project.
+
+## 📜 License
+
+Typhoon is licensed under [Apache 2.0](./LICENSE).
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in Typhoon by you, as defined in the Apache-2.0 license, shall be licensed as above, without any additional terms or conditions.

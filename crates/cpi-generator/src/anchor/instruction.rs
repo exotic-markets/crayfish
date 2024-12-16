@@ -1,5 +1,5 @@
 use {
-    crate::anchor::{gen_docs, gen_type_ref},
+    crate::anchor::{gen_docs, gen_type, gen_type_ref},
     anchor_lang_idl_spec::{Idl, IdlInstructionAccountItem},
     heck::ToUpperCamelCase,
     proc_macro2::Span,
@@ -17,10 +17,10 @@ pub fn gen_instructions(idl: &Idl) -> proc_macro2::TokenStream {
 
         let program_result = match &instruction.returns {
             Some(ty) => {
-                let result_ty = gen_type_ref(ty);
-                quote!(Result<#result_ty, crayfish_program::program_error::ProgramError>)
+                let result_ty = gen_type(ty);
+                quote!(Result<#result_ty, program::program_error::ProgramError>)
             }
-            None => quote!(crayfish_program::ProgramResult),
+            None => quote!(program::ProgramResult),
         };
 
         let account_metas = gen_account_metas(&metas);
@@ -33,7 +33,7 @@ pub fn gen_instructions(idl: &Idl) -> proc_macro2::TokenStream {
             /// Used for Cross-Program Invocation (CPI) calls.
             #docs
             pub struct #ident<'a> {
-                #(pub #accounts: &'a crayfish_program::RawAccountInfo,)*
+                #(pub #accounts: &'a program::RawAccountInfo,)*
             }
 
             impl #ident<'_> {
@@ -42,20 +42,20 @@ pub fn gen_instructions(idl: &Idl) -> proc_macro2::TokenStream {
                     self.invoke_signed(&[])
                 }
 
-                pub fn invoke_signed(&self, signers: crayfish_program::Signer) -> #program_result {
+                pub fn invoke_signed(&self, signers: program::Signer) -> #program_result {
                     #account_metas
 
-                    let mut instruction_data = [crayfish_program::UNINIT_BYTE; #data_len];
+                    let mut instruction_data = [program::UNINIT_BYTE; #data_len];
 
                     write_bytes(&mut instruction_data[..#discriminator_len], #discriminator_expr);
 
-                    let instruction = crayfish_program::Instruction {
-                        program_id: &crayfish_program::pubkey!(#program_id),
+                    let instruction = program::Instruction {
+                        program_id: &program::pubkey!(#program_id),
                         accounts: &account_metas,
                         data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, #data_len) },
                     };
 
-                    crayfish_program::invoke_signed(
+                    program::invoke_signed(
                         &instruction,
                         &[#(self.#accounts),*],
                         signers
@@ -103,16 +103,9 @@ fn gen_account_instruction(
 
 #[inline]
 fn gen_account_metas(metas: &[proc_macro2::TokenStream]) -> proc_macro2::TokenStream {
-    if metas.is_empty() {
-        quote! {
-            let account_metas: [crayfish_program::AccountMeta; 0] = [];
-        }
-    } else {
-        let metas_len = metas.len();
-        quote! {
-            let account_metas: [crayfish_program::AccountMeta; #metas_len] = [
-                #(#metas),*
-            ];
-        }
+    let len = metas.len();
+
+    quote! {
+        let account_metas: [program::AccountMeta; #len] = [#(#metas),*];
     }
 }

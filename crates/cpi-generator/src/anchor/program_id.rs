@@ -20,8 +20,7 @@ pub fn gen_program_id(idl: &Idl) -> proc_macro2::TokenStream {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use anchor_lang_idl_spec::IdlMetadata;
+    use {super::*, anchor_lang_idl_spec::IdlMetadata};
 
     #[test]
     fn test_gen_program_id() {

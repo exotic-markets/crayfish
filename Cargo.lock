@@ -3534,6 +3534,7 @@ name = "typhoon-cpi-generator"
 version = "0.1.0"
 dependencies = [
  "anchor-lang-idl-spec",
+ "five8_const",
  "heck 0.5.0",
  "proc-macro2",
  "quote",

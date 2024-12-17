@@ -26,6 +26,10 @@ pub fn account(_attr: TokenStream, item: TokenStream) -> TokenStream {
         impl Owner for #name #ty_generics #where_clause {
             const OWNER: program::pubkey::Pubkey = crate::ID;
         }
+
+        impl Discriminator for #name #ty_generics #where_clause {
+            const DISCRIMINATOR: &'static [u8] = &[];
+        }
     }
     .into_token_stream()
     .into()

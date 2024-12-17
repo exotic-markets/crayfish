@@ -1,5 +1,5 @@
 use {
-    crate::{FromAccountInfo, Owner, ReadableAccount},
+    crate::{Discriminator, FromAccountInfo, Owner, ReadableAccount},
     aligned::{Aligned, A8},
     bytemuck::Pod,
     std::marker::PhantomData,
@@ -11,7 +11,7 @@ use {
 
 pub struct Account<'a, T>
 where
-    T: Pod,
+    T: Pod + Discriminator,
 {
     info: &'a RawAccountInfo,
     _phantom: PhantomData<T>,
@@ -19,7 +19,7 @@ where
 
 impl<'a, T> FromAccountInfo<'a> for Account<'a, T>
 where
-    T: Owner + Pod,
+    T: Owner + Pod + Discriminator,
 {
     fn try_from_info(info: &'a RawAccountInfo) -> Result<Self, ProgramError> {
         if info.owner() != &T::OWNER {
@@ -35,7 +35,7 @@ where
 
 impl<T> AsRef<RawAccountInfo> for Account<'_, T>
 where
-    T: Pod,
+    T: Pod + Discriminator,
 {
     fn as_ref(&self) -> &RawAccountInfo {
         self.info
@@ -44,7 +44,7 @@ where
 
 impl<T> ReadableAccount for Account<'_, T>
 where
-    T: Pod,
+    T: Pod + Discriminator,
 {
     type DataType = T;
 
@@ -61,10 +61,11 @@ where
     }
 
     fn data(&self) -> Result<Ref<Self::DataType>, ProgramError> {
+        let dis_len = T::DISCRIMINATOR.len();
         let data = self.info.try_borrow_data()?;
 
         Ref::filter_map(data, |data| {
-            try_from_bytes(&data[..std::mem::size_of::<Aligned<A8, Self>>()])
+            try_from_bytes(&data[dis_len..std::mem::size_of::<Aligned<A8, Self>>() + dis_len])
         })
         .map_err(|_| ProgramError::InvalidAccountData)
     }

@@ -16,6 +16,10 @@ pub trait Owner {
     const OWNER: Pubkey;
 }
 
+pub trait Discriminator {
+    const DISCRIMINATOR: &'static [u8];
+}
+
 pub trait ReadableAccount: AsRef<RawAccountInfo> {
     type DataType: ?Sized;
 

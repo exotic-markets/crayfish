@@ -5,9 +5,9 @@ use {
 };
 
 pub fn gen_cpi(idl: &Idl) -> proc_macro2::TokenStream {
-    let program_id = gen_program_id(&idl);
-    let accounts = gen_accounts(&idl);
-    let instructions = gen_instructions(&idl);
+    let program_id = gen_program_id(idl);
+    let accounts = gen_accounts(idl);
+    let instructions = gen_instructions(idl);
 
     quote! {
         pub mod cpi {

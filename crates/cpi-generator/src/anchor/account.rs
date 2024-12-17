@@ -65,7 +65,7 @@ fn gen_struct(ident: &Ident, fields: &Option<IdlDefinedFields>) -> proc_macro2::
             }
             IdlDefinedFields::Tuple(f) => {
                 let fields = f.iter().map(|el| {
-                    let ty = gen_type(&el);
+                    let ty = gen_type(el);
                     quote!(#ty)
                 });
                 quote! {
@@ -101,7 +101,7 @@ fn gen_enum(ident: &Ident, variants: &[IdlEnumVariant]) -> proc_macro2::TokenStr
                 }
                 IdlDefinedFields::Tuple(f) => {
                     let fields = f.iter().map(|el| {
-                        let ty = gen_type(&el);
+                        let ty = gen_type(el);
                         quote!(#ty)
                     });
                     quote! {

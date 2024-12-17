@@ -3601,23 +3601,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "typhoon-space"
-version = "0.1.0"
-dependencies = [
- "typhoon-program",
- "typhoon-space-macro",
-]
-
-[[package]]
-name = "typhoon-space-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.89",
-]
-
-[[package]]
 name = "typhoon-traits"
 version = "0.1.0"
 dependencies = [

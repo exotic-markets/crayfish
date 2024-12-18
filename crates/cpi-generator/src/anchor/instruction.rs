@@ -1,6 +1,6 @@
 use {
     crate::anchor::{gen_docs, gen_type, gen_type_ref},
-    anchor_lang_idl_spec::{Idl, IdlInstructionAccountItem, IdlType},
+    anchor_lang_idl_spec::{Idl, IdlField, IdlInstructionAccountItem, IdlType},
     heck::ToUpperCamelCase,
     proc_macro2::{Span, TokenStream},
     quote::quote,
@@ -18,48 +18,8 @@ pub fn gen_instructions(idl: &Idl) -> TokenStream {
 
         let account_metas = gen_account_metas(&metas);
         let discriminator = &instruction.discriminator;
-        let discriminator_len = discriminator.len();
-        let buffer_size = 1232 - discriminator_len;
-        let discriminator_expr: Expr = syn::parse_quote!(&[#(#discriminator),*]);
-        let (arg_fields, arg_ser): (Vec<TokenStream>, Vec<TokenStream>) = instruction
-            .args
-            .iter()
-            .map(|arg| {
-                let ident = Ident::new(&arg.name, Span::call_site());
-                let ty_ref = gen_type_ref(&arg.ty);
-
-                (
-                    quote!(#ident: #ty_ref,),
-                    quote!(ident.serialize(&mut writer).map_err(|_| ProgramError::BorshIoError)?;),
-                )
-            })
-            .unzip();
-        let instruction_data = if arg_ser.is_empty() {
-            quote! {
-                let mut instruction_data = [program::UNINIT_BYTE; #buffer_size];
-                let mut writer = MaybeUninitWriter::new(destination, #discriminator_len);
-
-                #(#arg_ser)*
-
-                let instruction = program::Instruction {
-                    program_id: &program::pubkey!(#program_id),
-                    accounts: &account_metas,
-                    data: writer.initialized(),
-                };
-            }
-        } else {
-            quote! {
-                let mut instruction_data = [program::UNINIT_BYTE; #discriminator_len];
-
-                write_bytes(&mut instruction_data, #discriminator_expr);
-
-                let instruction = program::Instruction {
-                    program_id: &program::pubkey!(#program_id),
-                    accounts: &account_metas,
-                    data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, #discriminator_len) },
-                };
-            }
-        };
+        let (arg_fields, instruction_data) =
+            gen_instruction_data(&instruction.args, discriminator, program_id);
 
         quote! {
             /// Used for Cross-Program Invocation (CPI) calls.
@@ -92,6 +52,58 @@ pub fn gen_instructions(idl: &Idl) -> TokenStream {
     quote! {
         #(#instructions)*
     }
+}
+
+fn gen_instruction_data(
+    args: &[IdlField],
+    discriminator: &[u8],
+    program_id: &str,
+) -> (Vec<TokenStream>, TokenStream) {
+    let discriminator_len = discriminator.len();
+    let buffer_size = 1232 - discriminator_len;
+    let discriminator_expr: Expr = syn::parse_quote!(&[#(#discriminator),*]);
+    let (arg_fields, arg_ser): (Vec<TokenStream>, Vec<TokenStream>) = args
+        .iter()
+        .map(|arg| {
+            let ident = Ident::new(&arg.name, Span::call_site());
+            let ty_ref = gen_type_ref(&arg.ty);
+
+            (
+                quote!(#ident: #ty_ref,),
+                quote!(ident.serialize(&mut writer).map_err(|_| ProgramError::BorshIoError)?;),
+            )
+        })
+        .unzip();
+
+    let instruction_data = if arg_ser.is_empty() {
+        quote! {
+            let mut instruction_data = [program::UNINIT_BYTE; #buffer_size];
+            let mut writer = MaybeUninitWriter::new(destination, #discriminator_len);
+
+            write_bytes(&mut instruction_data, #discriminator_expr);
+            #(#arg_ser)*
+
+            let instruction = program::Instruction {
+                program_id: &program::pubkey!(#program_id),
+                accounts: &account_metas,
+                data: writer.initialized(),
+            };
+        }
+    } else {
+        quote! {
+            let mut instruction_data = [program::UNINIT_BYTE; #discriminator_len];
+
+            write_bytes(&mut instruction_data, #discriminator_expr);
+
+            let instruction = program::Instruction {
+                program_id: &program::pubkey!(#program_id),
+                accounts: &account_metas,
+                data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, #discriminator_len) },
+            };
+        }
+    };
+
+    (arg_fields, instruction_data)
 }
 
 fn gen_instructionn_result(returns: &Option<IdlType>) -> TokenStream {

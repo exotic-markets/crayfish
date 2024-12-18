@@ -53,7 +53,7 @@ impl<'a> MaybeUninitWriter<'a> {
     }
 }
 
-impl<'a> Write for MaybeUninitWriter<'a> {
+impl Write for MaybeUninitWriter<'_> {
     fn write(&mut self, data: &[u8]) -> std::io::Result<usize> {
         let available = self.buffer.len().saturating_sub(self.position);
         let to_write = data.len().min(available);

@@ -20,14 +20,24 @@ pub fn gen_accounts(idl: &Idl) -> proc_macro2::TokenStream {
             IdlTypeDefTy::Enum { variants } => gen_enum(&ident, variants),
             IdlTypeDefTy::Type { alias } => gen_type_alias(&ident, alias),
         };
-        let maybe_owner = idl.accounts.iter().find(|acc| acc.name == i.name).map(|_| {
-            quote! {
-                impl Owner for #ident {
-                    const OWNER: program::pubkey::Pubkey = ID;
+        let maybe_owner = idl
+            .accounts
+            .iter()
+            .find(|acc| acc.name == i.name)
+            .map(|acc| {
+                let discriminator = &acc.discriminator;
+
+                quote! {
+                    impl Owner for #ident {
+                        const OWNER: program::pubkey::Pubkey = ID;
+                    }
+
+                    impl Discriminator for #ident {
+                        const DISCRIMINATOR: &'static [u8] = &[#(#discriminator),*];
+                    }
                 }
-            }
-        });
-        // TODO generics and discriminator
+            });
+        // TODO generics
 
         quote! {
             #docs

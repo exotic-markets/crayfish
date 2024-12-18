@@ -19,7 +19,6 @@ solana-program = { workspace = true, optional = true }
 typhoon.workspace = true
 
 [dev-dependencies]
-aligned.workspace = true
 bytemuck.workspace = true
 litesvm.workspace = true
 solana-sdk.workspace = true

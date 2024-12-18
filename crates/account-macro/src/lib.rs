@@ -20,7 +20,7 @@ pub fn account(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     quote! {
         #[derive(bytemuck::Pod, bytemuck::Zeroable, Clone, Copy)]
-        #[repr(C, align(8))]
+        #[repr(C)]
         #item
 
         impl Owner for #name #ty_generics #where_clause {

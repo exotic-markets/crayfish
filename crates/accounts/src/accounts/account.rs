@@ -1,6 +1,5 @@
 use {
     crate::{Discriminator, FromAccountInfo, Owner, ReadableAccount},
-    aligned::{Aligned, A8},
     bytemuck::Pod,
     std::marker::PhantomData,
     typhoon_errors::Error,
@@ -65,7 +64,7 @@ where
         let data = self.info.try_borrow_data()?;
 
         Ref::filter_map(data, |data| {
-            try_from_bytes(&data[dis_len..std::mem::size_of::<Aligned<A8, T>>() + dis_len])
+            try_from_bytes(&data[dis_len..std::mem::size_of::<T>() + dis_len])
         })
         .map_err(|_| ProgramError::InvalidAccountData)
     }

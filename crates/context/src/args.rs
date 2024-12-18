@@ -1,6 +1,5 @@
 use {
     crate::HandlerContext,
-    aligned::{Aligned, A8},
     bytemuck::Pod,
     std::ops::Deref,
     typhoon_program::{bytes::try_from_bytes, program_error::ProgramError, RawAccountInfo},
@@ -31,10 +30,10 @@ where
         _accounts: &mut &'a [RawAccountInfo],
         instruction_data: &mut &'a [u8],
     ) -> Result<Self, ProgramError> {
-        let arg: &T = try_from_bytes(&instruction_data[..std::mem::size_of::<Aligned<A8, T>>()])
+        let arg: &T = try_from_bytes(&instruction_data[..std::mem::size_of::<T>()])
             .ok_or(ProgramError::InvalidInstructionData)?;
 
-        let (_, remaining) = instruction_data.split_at(std::mem::size_of::<Aligned<A8, T>>());
+        let (_, remaining) = instruction_data.split_at(std::mem::size_of::<T>());
         *instruction_data = remaining;
 
         Ok(Args::new(arg))

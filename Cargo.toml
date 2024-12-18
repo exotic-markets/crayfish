@@ -15,6 +15,14 @@ aligned = "0.4.2"
 anchor-lang-idl-spec = "0.1.0"
 bytemuck = "1.19"
 cargo-manifest = "0.16"
+codama = { git = "https://github.com/codama-idl/codama-rs" }
+codama-attributes = { git = "https://github.com/codama-idl/codama-rs" }
+codama-nodes = { git = "https://github.com/codama-idl/codama-rs" }
+codama-koroks = { git = "https://github.com/codama-idl/codama-rs" }
+codama-korok-plugins = { git = "https://github.com/codama-idl/codama-rs" }
+codama-korok-visitors = { git = "https://github.com/codama-idl/codama-rs" }
+codama-stores = { git = "https://github.com/codama-idl/codama-rs" }
+codama-syn-helpers = { git = "https://github.com/codama-idl/codama-rs" }
 crayfish-accounts = { version = "0.1.0", path = "crates/accounts" }
 crayfish-account-macro = { version = "0.1.0", path = "crates/account-macro" }
 crayfish-context = { version = "0.1.0", path = "crates/context" }

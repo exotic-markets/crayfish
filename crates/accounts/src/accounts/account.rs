@@ -65,7 +65,7 @@ where
         let data = self.info.try_borrow_data()?;
 
         Ref::filter_map(data, |data| {
-            try_from_bytes(&data[dis_len..std::mem::size_of::<Aligned<A8, Self>>() + dis_len])
+            try_from_bytes(&data[dis_len..std::mem::size_of::<Aligned<A8, T>>() + dis_len])
         })
         .map_err(|_| ProgramError::InvalidAccountData)
     }

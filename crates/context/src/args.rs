@@ -6,6 +6,7 @@ use {
     typhoon_program::{bytes::try_from_bytes, program_error::ProgramError, RawAccountInfo},
 };
 
+#[derive(Debug)]
 pub struct Args<'a, T>(&'a T);
 
 impl<'a, T> Args<'a, T> {
@@ -30,7 +31,7 @@ where
         _accounts: &mut &'a [RawAccountInfo],
         instruction_data: &mut &'a [u8],
     ) -> Result<Self, ProgramError> {
-        let arg: &T = try_from_bytes(&instruction_data[..std::mem::size_of::<T>()])
+        let arg: &T = try_from_bytes(&instruction_data[..std::mem::size_of::<Aligned<A8, T>>()])
             .ok_or(ProgramError::InvalidInstructionData)?;
 
         let (_, remaining) = instruction_data.split_at(std::mem::size_of::<Aligned<A8, T>>());

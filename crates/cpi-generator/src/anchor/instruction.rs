@@ -70,12 +70,24 @@ fn gen_instruction_data(
 
             (
                 quote!(#ident: #ty_ref,),
-                quote!(ident.serialize(&mut writer).map_err(|_| ProgramError::BorshIoError)?;),
+                quote!(#ident.serialize(&mut writer).map_err(|_| ProgramError::BorshIoError)?;),
             )
         })
         .unzip();
 
     let instruction_data = if arg_ser.is_empty() {
+        quote! {
+            let mut instruction_data = [program::UNINIT_BYTE; #discriminator_len];
+
+            write_bytes(&mut instruction_data, #discriminator_expr);
+
+            let instruction = program::Instruction {
+                program_id: &program::pubkey!(#program_id),
+                accounts: &account_metas,
+                data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, #discriminator_len) },
+            };
+        }
+    } else {
         quote! {
             let mut instruction_data = [program::UNINIT_BYTE; #buffer_size];
             let mut writer = MaybeUninitWriter::new(destination, #discriminator_len);
@@ -87,18 +99,6 @@ fn gen_instruction_data(
                 program_id: &program::pubkey!(#program_id),
                 accounts: &account_metas,
                 data: writer.initialized(),
-            };
-        }
-    } else {
-        quote! {
-            let mut instruction_data = [program::UNINIT_BYTE; #discriminator_len];
-
-            write_bytes(&mut instruction_data, #discriminator_expr);
-
-            let instruction = program::Instruction {
-                program_id: &program::pubkey!(#program_id),
-                accounts: &account_metas,
-                data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, #discriminator_len) },
             };
         }
     };
@@ -156,63 +156,118 @@ fn gen_account_metas(metas: &[TokenStream]) -> TokenStream {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use anchor_lang_idl_spec::{IdlInstructionAccount, IdlInstructionAccounts};
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anchor_lang_idl_spec::IdlInstructionAccount;
 
-//     #[test]
-//     fn test_gen_account_instruction_single() {
-//         let accounts = vec![IdlInstructionAccountItem::Single(IdlInstructionAccount {
-//             name: "test_account".to_string(),
-//             writable: true,
-//             signer: false,
-//             docs: vec![],
-//             optional: false,
-//             address: None,
-//             pda: None,
-//             relations: vec![],
-//         })];
+    #[test]
+    fn test_gen_instruction_data() {
+        let args = vec![];
+        let discriminator = vec![1, 2, 3, 4];
+        let program_id = "test_program";
 
-//         let (metas, fields) = gen_account_instruction(&accounts);
+        let (fields, data) = gen_instruction_data(&args, &discriminator, program_id);
+        let expected_data = quote! {
+            let mut instruction_data = [program::UNINIT_BYTE; 4usize];
 
-//         assert_eq!(metas.len(), 1);
-//         assert_eq!(fields.len(), 1);
-//         assert_eq!(fields[0].to_string(), "test_account");
-//     }
+            write_bytes(&mut instruction_data, &[1u8, 2u8, 3u8, 4u8]);
 
-//     #[test]
-//     fn test_gen_account_instruction_composite() {
-//         let accounts = vec![IdlInstructionAccountItem::Composite(
-//             IdlInstructionAccounts {
-//                 name: "group".to_string(),
-//                 accounts: vec![IdlInstructionAccountItem::Single(IdlInstructionAccount {
-//                     name: "nested_account".to_string(),
-//                     writable: true,
-//                     signer: true,
-//                     docs: vec![],
-//                     optional: false,
-//                     address: None,
-//                     pda: None,
-//                     relations: vec![],
-//                 })],
-//             },
-//         )];
+            let instruction = program::Instruction {
+                program_id: &program::pubkey!(#program_id),
+                accounts: &account_metas,
+                data: unsafe { from_raw_parts(instruction_data.as_ptr() as _, 4usize) },
+            };
+        };
+        assert!(fields.is_empty());
+        assert_eq!(data.to_string(), expected_data.to_string());
 
-//         let (metas, fields) = gen_account_instruction(&accounts);
+        let args = vec![IdlField {
+            docs: vec![],
+            name: "amount".to_string(),
+            ty: IdlType::U64,
+        }];
+        let discriminator = vec![1, 2, 3, 4];
+        let program_id = "test_program";
 
-//         assert_eq!(metas.len(), 1);
-//         assert_eq!(fields.len(), 1);
-//         assert_eq!(fields[0].to_string(), "nested_account");
-//     }
+        let (fields, data) = gen_instruction_data(&args, &discriminator, program_id);
+        let expected_data = quote! {
+            let mut instruction_data = [program::UNINIT_BYTE; 1228usize];
+            let mut writer = MaybeUninitWriter::new(destination, 4usize);
 
-//     #[test]
-//     fn test_gen_account_metas() {
-//         let metas = vec![quote!(meta1), quote!(meta2)];
+            write_bytes(&mut instruction_data, &[1u8, 2u8, 3u8, 4u8]);
+            amount.serialize(&mut writer).map_err(|_| ProgramError::BorshIoError)?;
 
-//         let result = gen_account_metas(&metas).to_string();
-//         assert!(result.contains("let account_metas"));
-//         assert!(result.contains("meta1"));
-//         assert!(result.contains("meta2"));
-//     }
-// }
+            let instruction = program::Instruction {
+                program_id: &program::pubkey!(#program_id),
+                accounts: &account_metas,
+                data: writer.initialized(),
+            };
+        };
+
+        assert_eq!(fields.len(), 1);
+        assert_eq!(data.to_string(), expected_data.to_string());
+    }
+
+    #[test]
+    fn test_gen_account_instruction() {
+        let accounts = vec![
+            IdlInstructionAccountItem::Single(IdlInstructionAccount {
+                name: "test_account".to_string(),
+                writable: true,
+                signer: false,
+                docs: vec![],
+                optional: false,
+                address: None,
+                pda: None,
+                relations: vec![],
+            }),
+            IdlInstructionAccountItem::Single(IdlInstructionAccount {
+                name: "test_account2".to_string(),
+                writable: false,
+                signer: true,
+                docs: vec![],
+                optional: false,
+                address: None,
+                pda: None,
+                relations: vec![],
+            }),
+        ];
+
+        let (metas, fields) = gen_account_instruction(&accounts);
+
+        let result = quote! {
+            #(#metas),*
+        };
+        let expected = quote! {
+            program::ToMeta::to_meta(&self.test_account, true, false),
+            program::ToMeta::to_meta(&self.test_account2, false, true)
+        };
+
+        assert_eq!(result.to_string(), expected.to_string());
+        assert_eq!(fields[0].to_string(), "test_account");
+        assert_eq!(fields[1].to_string(), "test_account2");
+    }
+
+    #[test]
+    fn test_gen_account_metas() {
+        let metas = vec![quote!(meta1), quote!(meta2)];
+        let result = gen_account_metas(&metas);
+        let expected = quote! {
+            let account_metas: [program::AccountMeta; 2usize] = [meta1, meta2];
+        };
+
+        assert_eq!(result.to_string(), expected.to_string());
+    }
+
+    #[test]
+    fn test_gen_instruction_result() {
+        let result_none = gen_instructionn_result(&None);
+        let expected_none = quote!(program::ProgramResult);
+        assert_eq!(result_none.to_string(), expected_none.to_string());
+
+        let result_some = gen_instructionn_result(&Some(IdlType::Bool));
+        let expected_some = quote!(Result<bool, program::program_error::ProgramError>);
+        assert_eq!(result_some.to_string(), expected_some.to_string());
+    }
+}

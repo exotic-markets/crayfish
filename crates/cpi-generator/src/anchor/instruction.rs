@@ -158,8 +158,7 @@ fn gen_account_metas(metas: &[TokenStream]) -> TokenStream {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use anchor_lang_idl_spec::IdlInstructionAccount;
+    use {super::*, anchor_lang_idl_spec::IdlInstructionAccount};
 
     #[test]
     fn test_gen_instruction_data() {
